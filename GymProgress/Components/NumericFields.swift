@@ -3,6 +3,7 @@ import SwiftUI
 struct OptionalLoadField: View {
     @Binding var loadTenths: Int?
     var placeholder = "—"
+    @FocusState private var isFocused: Bool
 
     var body: some View {
         TextField(placeholder, text: Binding(
@@ -14,12 +15,20 @@ struct OptionalLoadField: View {
         ))
         .keyboardType(.decimalPad)
         .multilineTextAlignment(.center)
+        .focused($isFocused)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Готово") { isFocused = false }
+            }
+        }
     }
 }
 
 struct OptionalRepsField: View {
     @Binding var reps: Int?
     var placeholder = "—"
+    @FocusState private var isFocused: Bool
 
     var body: some View {
         TextField(placeholder, text: Binding(
@@ -28,5 +37,12 @@ struct OptionalRepsField: View {
         ))
         .keyboardType(.numberPad)
         .multilineTextAlignment(.center)
+        .focused($isFocused)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Готово") { isFocused = false }
+            }
+        }
     }
 }

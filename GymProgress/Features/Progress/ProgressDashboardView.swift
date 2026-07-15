@@ -91,9 +91,14 @@ struct ProgressDashboardView: View {
         VStack(alignment: .leading, spacing: 8) {
             Image(systemName: icon).foregroundStyle(AppTheme.accent)
             Text(value).font(.title2.bold())
-            Text(label).font(.caption).foregroundStyle(AppTheme.secondaryText)
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryText)
+                .lineLimit(1)
+                .minimumScaleFactor(0.65)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: 88, alignment: .leading)
         .appCard()
     }
 
@@ -242,7 +247,11 @@ struct ProgressDashboardView: View {
 }
 
 private struct WorkoutHistoryDetailView: View {
-    let session: WorkoutSession
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @Bindable var session: WorkoutSession
+    @State private var isEditing = false
+    @State private var showDeleteConfirmation = false
 
     private var completedExercises: [SessionExercise] {
         session.sortedExercises.filter { $0.sets.contains(where: \.isCompleted) }
@@ -258,20 +267,50 @@ private struct WorkoutHistoryDetailView: View {
             ForEach(completedExercises) { exercise in
                 Section(exercise.nameSnapshot) {
                     ForEach(exercise.sortedSets.filter(\.isCompleted)) { set in
-                        HStack {
-                            Text("Подход \(set.order + 1)")
-                            Spacer()
-                            Text(setSummary(set, loadMode: exercise.loadMode))
-                                .foregroundStyle(.primary)
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(AppTheme.success)
+                        if isEditing {
+                            HistorySetEditorRow(
+                                set: set,
+                                loadMode: exercise.loadMode,
+                                onDelete: { delete(set, from: exercise) }
+                            )
+                        } else {
+                            HStack {
+                                Text("Подход \(set.order + 1)")
+                                Spacer()
+                                Text(setSummary(set, loadMode: exercise.loadMode))
+                                    .foregroundStyle(.primary)
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(AppTheme.success)
+                            }
                         }
+                    }
+                    if isEditing {
+                        Button("Добавить подход", systemImage: "plus") { addSet(to: exercise) }
                     }
                 }
             }
         }
         .navigationTitle(session.name)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                if isEditing {
+                    Button("Удалить", systemImage: "trash", role: .destructive) {
+                        showDeleteConfirmation = true
+                    }
+                }
+                Button(isEditing ? "Готово" : "Править", systemImage: isEditing ? "checkmark" : "square.and.pencil") {
+                    if isEditing { try? modelContext.save() }
+                    isEditing.toggle()
+                }
+            }
+        }
+        .alert("Удалить тренировку из истории?", isPresented: $showDeleteConfirmation) {
+            Button("Удалить", role: .destructive, action: deleteSession)
+            Button("Отмена", role: .cancel) { }
+        } message: {
+            Text("Будут удалены тренировка, все её упражнения и подходы. Это действие нельзя отменить.")
+        }
     }
 
     private var durationText: String {
@@ -284,5 +323,88 @@ private struct WorkoutHistoryDetailView: View {
         guard loadMode != .bodyweight else { return "свой вес × \(reps)" }
         let weight = set.actualLoadTenths.map { "\($0.loadText) \(set.unit.rawValue)" } ?? "—"
         return "\(weight) × \(reps)"
+    }
+
+    private func addSet(to exercise: SessionExercise) {
+        let last = exercise.sortedSets.filter(\.isCompleted).last
+        let set = SetRecord(
+            order: exercise.sets.count,
+            plannedLoadTenths: last?.plannedLoadTenths,
+            plannedReps: last?.plannedReps,
+            actualLoadTenths: last?.actualLoadTenths,
+            actualReps: last?.actualReps,
+            unit: last?.unit ?? .kg
+        )
+        set.isCompleted = true
+        set.completedAt = session.endedAt ?? .now
+        exercise.sets.append(set)
+        try? modelContext.save()
+    }
+
+    private func delete(_ set: SetRecord, from exercise: SessionExercise) {
+        exercise.sets.removeAll { $0.id == set.id }
+        modelContext.delete(set)
+        for (index, item) in exercise.sortedSets.enumerated() { item.order = index }
+        try? modelContext.save()
+    }
+
+    private func deleteSession() {
+        modelContext.delete(session)
+        try? modelContext.save()
+        dismiss()
+    }
+}
+
+private struct HistorySetEditorRow: View {
+    @Bindable var set: SetRecord
+    let loadMode: LoadMode
+    let onDelete: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Подход \(set.order + 1)")
+                    .font(.subheadline.weight(.medium))
+                Spacer()
+                Button(role: .destructive, action: onDelete) {
+                    Image(systemName: "minus.circle")
+                }
+                .accessibilityLabel("Удалить подход \(set.order + 1)")
+            }
+            HStack(spacing: 8) {
+                if loadMode == .bodyweight {
+                    Text("Свой вес")
+                        .foregroundStyle(AppTheme.secondaryText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    OptionalLoadField(loadTenths: $set.actualLoadTenths, placeholder: "Вес")
+                        .textFieldStyle(.roundedBorder)
+                    Menu {
+                        ForEach(WeightUnit.allCases) { unit in
+                            Button(unit.rawValue) { changeUnit(to: unit) }
+                        }
+                    } label: {
+                        Text(set.unit.rawValue)
+                            .font(.subheadline.weight(.medium))
+                    }
+                    .frame(width: 38)
+                }
+                OptionalRepsField(reps: $set.actualReps, placeholder: "Повт.")
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 76)
+            }
+        }
+        .padding(.vertical, 3)
+    }
+
+    private func changeUnit(to unit: WeightUnit) {
+        guard unit != set.unit else { return }
+        if let load = set.plannedLoadTenths {
+            set.plannedLoadTenths = set.unit.converted(loadTenths: load, to: unit)
+        }
+        if let load = set.actualLoadTenths {
+            set.actualLoadTenths = set.unit.converted(loadTenths: load, to: unit)
+        }
+        set.unit = unit
     }
 }
