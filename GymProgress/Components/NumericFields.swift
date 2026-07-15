@@ -1,9 +1,27 @@
 import SwiftUI
+import UIKit
+
+extension View {
+    func dismissKeyboardOnTap() -> some View {
+        background(
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    UIApplication.shared.sendAction(
+                        #selector(UIResponder.resignFirstResponder),
+                        to: nil,
+                        from: nil,
+                        for: nil
+                    )
+                }
+        )
+            .scrollDismissesKeyboard(.interactively)
+    }
+}
 
 struct OptionalLoadField: View {
     @Binding var loadTenths: Int?
     var placeholder = "—"
-    @FocusState private var isFocused: Bool
 
     var body: some View {
         TextField(placeholder, text: Binding(
@@ -15,20 +33,12 @@ struct OptionalLoadField: View {
         ))
         .keyboardType(.decimalPad)
         .multilineTextAlignment(.center)
-        .focused($isFocused)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Готово") { isFocused = false }
-            }
-        }
     }
 }
 
 struct OptionalRepsField: View {
     @Binding var reps: Int?
     var placeholder = "—"
-    @FocusState private var isFocused: Bool
 
     var body: some View {
         TextField(placeholder, text: Binding(
@@ -37,12 +47,5 @@ struct OptionalRepsField: View {
         ))
         .keyboardType(.numberPad)
         .multilineTextAlignment(.center)
-        .focused($isFocused)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Готово") { isFocused = false }
-            }
-        }
     }
 }

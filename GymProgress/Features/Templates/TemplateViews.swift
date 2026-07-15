@@ -65,6 +65,15 @@ enum TemplateService {
         for template in templates { context.delete(template) }
         try context.save()
     }
+
+    static func syncPlannedSchedules(for template: WorkoutTemplate, context: ModelContext) {
+        guard let schedules = try? context.fetch(FetchDescriptor<ScheduledWorkout>()) else { return }
+        for schedule in schedules where schedule.status == .planned && schedule.templateID == template.id {
+            schedule.templateName = template.name
+            Task { await NotificationService.schedule(for: schedule) }
+        }
+        try? context.save()
+    }
 }
 
 private struct TemplateEditorView: View {
@@ -100,8 +109,12 @@ private struct TemplateEditorView: View {
                 Button("Добавить упражнение", systemImage: "plus") { showCatalog = true }
             }
         }
+        .dismissKeyboardOnTap()
         .navigationTitle(template.name)
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: template.name) { _, _ in
+            TemplateService.syncPlannedSchedules(for: template, context: modelContext)
+        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) { EditButton() }
         }
@@ -225,6 +238,7 @@ private struct VariantEditorView: View {
                 }
             }
         }
+        .dismissKeyboardOnTap()
         .navigationTitle(ExerciseCatalog.shared.item(id: variant.catalogID)?.name ?? "Упражнение")
         .navigationBarTitleDisplayMode(.inline)
     }

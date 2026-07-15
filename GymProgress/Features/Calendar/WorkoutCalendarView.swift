@@ -38,7 +38,10 @@ struct WorkoutCalendarView: View {
                     } else {
                         ForEach(selectedSchedules) { workout in
                             Button { editingWorkout = workout } label: {
-                                ScheduleRow(workout: workout)
+                                ScheduleRow(
+                                    workout: workout,
+                                    templateName: templates.first(where: { $0.id == workout.templateID })?.name ?? workout.templateName
+                                )
                             }
                             .buttonStyle(.plain)
                             .disabled(workout.status == .completed || workout.status == .inProgress)
@@ -99,11 +102,12 @@ struct WorkoutCalendarView: View {
 
 private struct ScheduleRow: View {
     let workout: ScheduledWorkout
+    let templateName: String
 
     var body: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(workout.templateName)
+                Text(templateName)
                     .font(.headline)
                     .foregroundStyle(AppTheme.text)
                 Text(workout.scheduledAt.formatted(date: .omitted, time: .shortened))

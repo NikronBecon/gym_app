@@ -78,11 +78,12 @@ struct TodayView: View {
     }
 
     private func scheduleCard(_ schedule: ScheduledWorkout) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        let templateName = templates.first(where: { $0.id == schedule.templateID })?.name ?? schedule.templateName
+        return VStack(alignment: .leading, spacing: 12) {
             Text("Ближайшая тренировка")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(AppTheme.secondaryText)
-            Text(schedule.templateName)
+            Text(templateName)
                 .font(.title2.bold())
             Label(
                 schedule.scheduledAt.formatted(date: .abbreviated, time: .shortened),

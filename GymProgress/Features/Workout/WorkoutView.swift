@@ -45,6 +45,7 @@ struct WorkoutView: View {
                 .padding()
             }
             .background(AppTheme.background)
+            .dismissKeyboardOnTap()
             .navigationTitle(session.name)
             .navigationBarTitleDisplayMode(.inline)
             .interactiveDismissDisabled()
@@ -312,14 +313,6 @@ private struct FinishWorkoutView: View {
 
     @State private var bodyWeight = ""
     @State private var calories = ""
-    @FocusState private var focusedField: FinishField?
-
-    private enum FinishField: Hashable {
-        case bodyWeight
-        case calories
-        case note
-    }
-
     var body: some View {
         NavigationStack {
             Form {
@@ -334,15 +327,13 @@ private struct FinishWorkoutView: View {
                 Section("Необязательно") {
                     TextField("Вес тела, кг", text: $bodyWeight)
                         .keyboardType(.decimalPad)
-                        .focused($focusedField, equals: .bodyWeight)
                     TextField("Калории", text: $calories)
                         .keyboardType(.numberPad)
-                        .focused($focusedField, equals: .calories)
                     TextField("Заметка", text: $session.note, axis: .vertical)
                         .lineLimit(3...6)
-                        .focused($focusedField, equals: .note)
                 }
             }
+            .dismissKeyboardOnTap()
             .navigationTitle("Завершение")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -351,10 +342,6 @@ private struct FinishWorkoutView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Сохранить") { complete() }
                         .accessibilityIdentifier("finishWorkout.save")
-                }
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Готово") { focusedField = nil }
                 }
             }
         }

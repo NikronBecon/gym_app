@@ -9,6 +9,7 @@ struct ProgressDashboardView: View {
     ) private var sessions: [WorkoutSession]
     @Query(sort: \BodyWeightEntry.day) private var weights: [BodyWeightEntry]
     @State private var selectedExerciseID: String?
+    @State private var weightManager: WeightManagerRequest?
 
     private var completed: [WorkoutSession] {
         sessions
@@ -69,6 +70,9 @@ struct ProgressDashboardView: View {
             .background(AppTheme.background)
             .navigationTitle("Прогресс")
         }
+        .sheet(item: $weightManager) { _ in
+            BodyWeightManagerView()
+        }
     }
 
     private var summary: some View {
@@ -112,7 +116,7 @@ struct ProgressDashboardView: View {
             Text("Вес тела")
                 .font(.headline)
             if weights.isEmpty {
-                emptyState("Укажите вес при завершении тренировки")
+                emptyState("Нажмите здесь, чтобы добавить первый замер")
             } else {
                 Chart(weights) { entry in
                     LineMark(
@@ -134,9 +138,14 @@ struct ProgressDashboardView: View {
                 .chartYAxis { bodyWeightAxis }
                 .chartYAxisLabel("Вес, кг", position: .leading)
             }
+            Text("Нажмите на график, чтобы добавить или удалить замер.")
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryText)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .appCard()
+        .contentShape(Rectangle())
+        .onTapGesture { weightManager = WeightManagerRequest() }
     }
 
     private var historySection: some View {
@@ -290,6 +299,7 @@ private struct WorkoutHistoryDetailView: View {
                 }
             }
         }
+        .dismissKeyboardOnTap()
         .navigationTitle(session.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -349,6 +359,13 @@ private struct WorkoutHistoryDetailView: View {
     }
 
     private func deleteSession() {
+        if let scheduledWorkoutID = session.scheduledWorkoutID {
+            let descriptor = FetchDescriptor<ScheduledWorkout>(predicate: #Predicate { $0.id == scheduledWorkoutID })
+            if let scheduledWorkout = try? modelContext.fetch(descriptor).first {
+                NotificationService.cancel(workoutID: scheduledWorkout.id)
+                modelContext.delete(scheduledWorkout)
+            }
+        }
         modelContext.delete(session)
         try? modelContext.save()
         dismiss()
@@ -406,5 +423,109 @@ private struct HistorySetEditorRow: View {
             set.actualLoadTenths = set.unit.converted(loadTenths: load, to: unit)
         }
         set.unit = unit
+    }
+}
+
+private struct WeightManagerRequest: Identifiable {
+    let id = UUID()
+}
+
+private struct WeightMeasurementDraft: Identifiable {
+    let id = UUID()
+}
+
+private struct BodyWeightManagerView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \BodyWeightEntry.day, order: .reverse) private var weights: [BodyWeightEntry]
+    @State private var newMeasurement: WeightMeasurementDraft?
+
+    var body: some View {
+        NavigationStack {
+            List {
+                if weights.isEmpty {
+                    ContentUnavailableView(
+                        "Нет замеров",
+                        systemImage: "scalemass",
+                        description: Text("Добавьте вес тела, чтобы увидеть динамику на графике.")
+                    )
+                } else {
+                    ForEach(weights) { entry in
+                        LabeledContent(entry.day.formatted(date: .long, time: .omitted)) {
+                            Text("\(Double(entry.weightTenthsKg) / 10, format: .number.precision(.fractionLength(1))) кг")
+                                .fontWeight(.medium)
+                        }
+                    }
+                    .onDelete(perform: delete)
+                }
+            }
+            .dismissKeyboardOnTap()
+            .navigationTitle("Замеры веса")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Готово") { dismiss() }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Добавить", systemImage: "plus") {
+                        newMeasurement = WeightMeasurementDraft()
+                    }
+                    .accessibilityIdentifier("progress.addWeight")
+                }
+            }
+        }
+        .sheet(item: $newMeasurement) { _ in
+            BodyWeightEditorView()
+        }
+    }
+
+    private func delete(at offsets: IndexSet) {
+        for index in offsets { modelContext.delete(weights[index]) }
+        try? modelContext.save()
+    }
+}
+
+private struct BodyWeightEditorView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @State private var day = Date()
+    @State private var weight = ""
+
+    private var weightTenths: Int? {
+        let normalized = weight.replacingOccurrences(of: ",", with: ".")
+        return Double(normalized).map { Int(($0 * 10).rounded()) }
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                DatePicker("Дата", selection: $day, displayedComponents: .date)
+                TextField("Вес, кг", text: $weight)
+                    .keyboardType(.decimalPad)
+            }
+            .dismissKeyboardOnTap()
+            .navigationTitle("Новый замер")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Отмена") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Сохранить") { save() }
+                        .disabled(weightTenths == nil)
+                }
+            }
+        }
+    }
+
+    private func save() {
+        guard let weightTenths else { return }
+        let normalizedDay = Calendar.current.startOfDay(for: day)
+        let descriptor = FetchDescriptor<BodyWeightEntry>(predicate: #Predicate { $0.day == normalizedDay })
+        if let existing = try? modelContext.fetch(descriptor).first {
+            existing.weightTenthsKg = weightTenths
+        } else {
+            modelContext.insert(BodyWeightEntry(day: normalizedDay, weightTenthsKg: weightTenths))
+        }
+        try? modelContext.save()
+        dismiss()
     }
 }
