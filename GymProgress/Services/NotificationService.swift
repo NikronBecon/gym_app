@@ -1,6 +1,7 @@
 import Foundation
 import UserNotifications
 
+@MainActor
 enum NotificationService {
     static func schedule(for workout: ScheduledWorkout) async {
         if ProcessInfo.processInfo.arguments.contains("-UITesting") { return }

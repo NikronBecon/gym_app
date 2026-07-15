@@ -3,8 +3,7 @@ import Foundation
 enum AnalyticsService {
     static func volumeKg(for session: WorkoutSession) -> Double {
         session.exercises.reduce(0) { total, exercise in
-            guard exercise.loadMode != .bodyweight,
-                  exercise.loadMode != .additionalBodyweight else { return total }
+            guard exercise.loadMode != .bodyweight else { return total }
             let multiplier = exercise.loadMode == .perHand ? 2.0 : 1.0
             let exerciseVolume = exercise.sets.reduce(0.0) { subtotal, set in
                 guard set.isCompleted,
@@ -20,18 +19,28 @@ enum AnalyticsService {
         catalogID: String,
         sessions: [WorkoutSession]
     ) -> (loadKg: Double, reps: Int)? {
-        sessions
-            .filter { $0.status == .completed }
-            .flatMap(\.exercises)
-            .filter { $0.catalogID == catalogID && $0.loadMode != .bodyweight }
-            .flatMap(\.sets)
-            .filter(\.isCompleted)
-            .compactMap { set -> (Double, Int)? in
-                guard let load = set.actualLoadTenths, let reps = set.actualReps else { return nil }
-                return (set.unit.kilograms(loadTenths: load), reps)
+        var best: (loadKg: Double, reps: Int)?
+
+        for session in sessions where session.status == .completed {
+            for exercise in session.exercises
+                where exercise.catalogID == catalogID && exercise.loadMode != .bodyweight {
+                for set in exercise.sets where set.isCompleted {
+                    guard let load = set.actualLoadTenths, let reps = set.actualReps else { continue }
+
+                    let candidate = (loadKg: set.unit.kilograms(loadTenths: load), reps: reps)
+                    guard let current = best else {
+                        best = candidate
+                        continue
+                    }
+
+                    if candidate.loadKg > current.loadKg
+                        || (candidate.loadKg == current.loadKg && candidate.reps > current.reps) {
+                        best = candidate
+                    }
+                }
             }
-            .max { left, right in
-                left.0 == right.0 ? left.1 < right.1 : left.0 < right.0
-            }
+        }
+
+        return best
     }
 }

@@ -9,9 +9,10 @@ enum WorkoutBuilder {
         scheduledWorkoutID: UUID?,
         context: ModelContext
     ) throws -> WorkoutSession {
-        let completed = try context.fetch(FetchDescriptor<WorkoutSession>())
-            .filter { $0.status == .completed }
-            .sorted { ($0.endedAt ?? $0.startedAt) > ($1.endedAt ?? $1.startedAt) }
+        let completed = try context.fetch(FetchDescriptor<WorkoutSession>(
+            predicate: #Predicate { $0.statusRaw == "completed" },
+            sortBy: [SortDescriptor(\WorkoutSession.startedAt, order: .reverse)]
+        ))
 
         let exercises = template.sortedSlots.enumerated().compactMap { index, slot -> SessionExercise? in
             let selected = choices[slot.id].flatMap { choice in
@@ -22,7 +23,10 @@ enum WorkoutBuilder {
             let catalogItem = ExerciseCatalog.shared.item(id: selected.catalogID)
             let previous = completed.lazy
                 .flatMap(\.exercises)
-                .first { $0.catalogID == selected.catalogID }
+                .first {
+                    $0.catalogID == selected.catalogID
+                        && $0.sets.contains(where: \.isCompleted)
+                }
 
             let previousSets: [(Int?, Int?, WeightUnit)] = previous?.sortedSets
                     .filter(\.isCompleted)
@@ -65,8 +69,15 @@ enum WorkoutBuilder {
         context.insert(session)
 
         if let scheduledWorkoutID {
-            let schedules = try context.fetch(FetchDescriptor<ScheduledWorkout>())
-            schedules.first { $0.id == scheduledWorkoutID }?.sessionID = session.id
+            let scheduleID = scheduledWorkoutID
+            let descriptor = FetchDescriptor<ScheduledWorkout>(
+                predicate: #Predicate { $0.id == scheduleID }
+            )
+            if let schedule = try context.fetch(descriptor).first {
+                schedule.sessionID = session.id
+                schedule.status = .inProgress
+                NotificationService.cancel(workoutID: schedule.id)
+            }
         }
 
         try context.save()

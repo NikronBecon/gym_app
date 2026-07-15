@@ -4,6 +4,7 @@ import SwiftUI
 struct TemplateListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \WorkoutTemplate.order) private var templates: [WorkoutTemplate]
+    @State private var templatesPendingDeletion: [WorkoutTemplate] = []
 
     var body: some View {
         List {
@@ -21,6 +22,19 @@ struct TemplateListView: View {
                     Label("Новый шаблон", systemImage: "plus")
                 }
             }
+            ToolbarItem(placement: .topBarTrailing) { EditButton() }
+        }
+        .alert(
+            "Удалить шаблон?",
+            isPresented: Binding(
+                get: { !templatesPendingDeletion.isEmpty },
+                set: { if !$0 { templatesPendingDeletion = [] } }
+            )
+        ) {
+            Button("Удалить", role: .destructive, action: confirmDelete)
+            Button("Отмена", role: .cancel) { templatesPendingDeletion = [] }
+        } message: {
+            Text("Шаблон и запланированные по нему тренировки будут удалены. История уже выполненных тренировок сохранится.")
         }
     }
 
@@ -30,8 +44,26 @@ struct TemplateListView: View {
     }
 
     private func delete(at offsets: IndexSet) {
-        for index in offsets { modelContext.delete(templates[index]) }
-        try? modelContext.save()
+        templatesPendingDeletion = offsets.map { templates[$0] }
+    }
+
+    private func confirmDelete() {
+        try? TemplateService.delete(templatesPendingDeletion, context: modelContext)
+        templatesPendingDeletion = []
+    }
+}
+
+@MainActor
+enum TemplateService {
+    static func delete(_ templates: [WorkoutTemplate], context: ModelContext) throws {
+        let templateIDs = Set(templates.map(\.id))
+        let schedules = try context.fetch(FetchDescriptor<ScheduledWorkout>())
+        for schedule in schedules where schedule.status == .planned && templateIDs.contains(schedule.templateID) {
+            NotificationService.cancel(workoutID: schedule.id)
+            context.delete(schedule)
+        }
+        for template in templates { context.delete(template) }
+        try context.save()
     }
 }
 
@@ -70,7 +102,9 @@ private struct TemplateEditorView: View {
         }
         .navigationTitle(template.name)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar { EditButton() }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) { EditButton() }
+        }
         .sheet(isPresented: $showCatalog) {
             CatalogPickerView { item in
                 let sets = (0..<3).map {
@@ -157,6 +191,9 @@ private struct VariantEditorView: View {
                 Stepper("\(variant.restSeconds) секунд", value: $variant.restSeconds, in: 30...300, step: 15)
             }
             Section("Подходы") {
+                Text("Ориентир для следующей тренировки: укажите вес и повторы. Можно оставить поля пустыми.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                 HStack {
                     Text("№").frame(width: 24)
                     Text("Вес").frame(maxWidth: .infinity)
@@ -167,9 +204,12 @@ private struct VariantEditorView: View {
                 .foregroundStyle(.secondary)
 
                 ForEach(variant.sortedSets) { set in
-                    PlannedSetEditorRow(set: set)
+                    PlannedSetEditorRow(
+                        set: set,
+                        canDelete: variant.plannedSets.count > 1,
+                        onDelete: { delete(set) }
+                    )
                 }
-                .onDelete(perform: delete)
 
                 Button("Добавить подход", systemImage: "plus") {
                     let unit = variant.plannedSets.last?.unit
@@ -189,13 +229,9 @@ private struct VariantEditorView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    private func delete(at offsets: IndexSet) {
-        let ordered = variant.sortedSets
-        for index in offsets {
-            let set = ordered[index]
-            variant.plannedSets.removeAll { $0.id == set.id }
-            modelContext.delete(set)
-        }
+    private func delete(_ set: PlannedSet) {
+        variant.plannedSets.removeAll { $0.id == set.id }
+        modelContext.delete(set)
         for (index, set) in variant.sortedSets.enumerated() { set.order = index }
         try? modelContext.save()
     }
@@ -203,22 +239,46 @@ private struct VariantEditorView: View {
 
 private struct PlannedSetEditorRow: View {
     @Bindable var set: PlannedSet
+    let canDelete: Bool
+    let onDelete: () -> Void
 
     var body: some View {
         HStack {
             Text("\(set.order + 1)").frame(width: 24)
             OptionalLoadField(loadTenths: $set.loadTenths)
                 .frame(maxWidth: .infinity)
-            Picker("Единица", selection: Binding(
-                get: { set.unit },
-                set: { set.unit = $0 }
-            )) {
-                ForEach(WeightUnit.allCases) { Text($0.rawValue).tag($0) }
+            Menu {
+                ForEach(WeightUnit.allCases) { unit in
+                    Button(unit.rawValue) { changeUnit(to: unit) }
+                }
+            } label: {
+                HStack(spacing: 2) {
+                    Text(set.unit.rawValue)
+                    Image(systemName: "chevron.down")
+                        .font(.caption2)
+                }
+                .frame(width: 52)
             }
-            .labelsHidden()
-            .frame(width: 52)
+            .accessibilityLabel("Единица веса: \(set.unit.rawValue)")
             OptionalRepsField(reps: $set.reps)
                 .frame(width: 58)
+            if canDelete {
+                Button(role: .destructive, action: onDelete) {
+                    Image(systemName: "minus.circle")
+                }
+                .buttonStyle(.borderless)
+                .contentShape(Circle())
+                .frame(width: 28, height: 28)
+                .accessibilityLabel("Удалить подход \(set.order + 1)")
+            }
         }
+    }
+
+    private func changeUnit(to unit: WeightUnit) {
+        guard unit != set.unit else { return }
+        if let load = set.loadTenths {
+            set.loadTenths = set.unit.converted(loadTenths: load, to: unit)
+        }
+        set.unit = unit
     }
 }

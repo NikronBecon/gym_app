@@ -9,9 +9,14 @@ struct WorkoutView: View {
     let onFinished: () -> Void
 
     @State private var showFinish = false
+    @State private var showCatalog = false
 
     private var incompleteCount: Int {
-        session.exercises.flatMap(\.sets).filter { !$0.isCompleted }.count
+        session.exercises.flatMap { exercise in
+            exercise.sets.filter { set in
+                set.actualReps == nil || (exercise.loadMode != .bodyweight && set.actualLoadTenths == nil)
+            }
+        }.count
     }
 
     var body: some View {
@@ -25,6 +30,12 @@ struct WorkoutView: View {
                             onSetCompleted: { startRest(seconds: exercise.restSeconds) }
                         )
                     }
+                    Button("Добавить упражнение", systemImage: "plus") { showCatalog = true }
+                        .buttonStyle(.bordered)
+                    Text("Добавленное упражнение появится только в этой тренировке и не изменит шаблон.")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.secondaryText)
+                        .multilineTextAlignment(.center)
                     Button("Завершить тренировку") { showFinish = true }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)
@@ -39,13 +50,24 @@ struct WorkoutView: View {
             .interactiveDismissDisabled()
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
+                    Button("Выйти", systemImage: "chevron.backward") {
+                        try? modelContext.save()
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .principal) {
                     TimelineView(.periodic(from: .now, by: 1)) { context in
                         Text(session.startedAt, style: .timer)
-                            .font(.system(.body, design: .monospaced).weight(.semibold))
+                            .font(.caption.monospacedDigit().weight(.semibold))
                             .foregroundStyle(AppTheme.secondaryText)
                             .accessibilityLabel("Длительность тренировки")
                     }
                 }
+            }
+        }
+        .sheet(isPresented: $showCatalog) {
+            CatalogPickerView { item in
+                addExercise(item)
             }
         }
         .sheet(isPresented: $showFinish) {
@@ -73,7 +95,10 @@ struct WorkoutView: View {
                             .font(.title2.monospacedDigit().bold())
                     }
                     Spacer()
-                    Button("Пропустить") { session.restEndDate = nil }
+                    Button("Пропустить") {
+                        session.restEndDate = nil
+                        try? modelContext.save()
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 .appCard()
@@ -90,6 +115,28 @@ struct WorkoutView: View {
 
     private func startRest(seconds: Int) {
         session.restEndDate = .now.addingTimeInterval(TimeInterval(seconds))
+        try? modelContext.save()
+    }
+
+    private func addExercise(_ item: ExerciseCatalogItem) {
+        let sets = (0..<3).map { index in
+            SetRecord(
+                order: index,
+                plannedLoadTenths: nil,
+                plannedReps: nil,
+                actualLoadTenths: nil,
+                actualReps: nil,
+                unit: item.defaultUnit
+            )
+        }
+        session.exercises.append(SessionExercise(
+            catalogID: item.id,
+            nameSnapshot: item.name,
+            order: session.exercises.count,
+            restSeconds: 90,
+            loadMode: item.loadMode,
+            sets: sets
+        ))
         try? modelContext.save()
     }
 
@@ -137,11 +184,10 @@ private struct SessionExerciseCard: View {
                 SessionSetRow(
                     set: set,
                     loadMode: exercise.loadMode,
-                    onCompleted: onSetCompleted
+                    onCompleted: onSetCompleted,
+                    onDelete: { delete(set) },
+                    canDelete: exercise.sets.count > 1
                 )
-                .contextMenu {
-                    Button("Удалить подход", role: .destructive) { delete(set) }
-                }
             }
 
             Button("Добавить подход", systemImage: "plus") { addSet() }
@@ -177,6 +223,8 @@ private struct SessionSetRow: View {
     @Bindable var set: SetRecord
     let loadMode: LoadMode
     let onCompleted: () -> Void
+    let onDelete: () -> Void
+    let canDelete: Bool
 
     var body: some View {
         HStack(spacing: 8) {
@@ -190,16 +238,19 @@ private struct SessionSetRow: View {
             if loadMode == .bodyweight {
                 Text("—").frame(width: 62)
             } else {
-                VStack(spacing: 0) {
+                HStack(spacing: 2) {
                     OptionalLoadField(loadTenths: $set.actualLoadTenths)
-                    Text(set.unit.rawValue)
-                        .font(.caption2)
-                        .foregroundStyle(AppTheme.secondaryText)
+                    Menu {
+                        ForEach(WeightUnit.allCases) { unit in
+                            Button(unit.rawValue) { changeUnit(to: unit) }
+                        }
+                    } label: {
+                        Text(set.unit.rawValue)
+                            .font(.caption2)
+                            .foregroundStyle(AppTheme.secondaryText)
+                    }
                 }
                 .frame(width: 62)
-                .onTapGesture {
-                    set.unit = set.unit == .kg ? .lb : .kg
-                }
             }
             OptionalRepsField(reps: $set.actualReps)
                 .frame(width: 52)
@@ -214,8 +265,16 @@ private struct SessionSetRow: View {
                     .foregroundStyle(set.isCompleted ? AppTheme.success : AppTheme.secondaryText)
             }
             .frame(width: 34)
-            .disabled(set.actualReps == nil)
+            .disabled(!canComplete)
             .accessibilityLabel(set.isCompleted ? "Подход выполнен" : "Отметить подход")
+
+            if canDelete {
+                Button(role: .destructive, action: onDelete) {
+                    Image(systemName: "minus.circle")
+                }
+                .frame(width: 24)
+                .accessibilityLabel("Удалить подход \(set.order + 1)")
+            }
         }
         .padding(.vertical, 4)
         .opacity(set.isCompleted ? 0.72 : 1)
@@ -225,6 +284,22 @@ private struct SessionSetRow: View {
         let load = set.plannedLoadTenths.map { "\($0.loadText) \(set.unit.rawValue)" } ?? "—"
         let reps = set.plannedReps.map(String.init) ?? "—"
         return "\(load) × \(reps)"
+    }
+
+    private var canComplete: Bool {
+        return set.actualReps != nil && (loadMode == .bodyweight || set.actualLoadTenths != nil)
+    }
+
+    private func changeUnit(to unit: WeightUnit) {
+        guard unit != set.unit else { return }
+        if let load = set.plannedLoadTenths {
+            set.plannedLoadTenths = set.unit.converted(loadTenths: load, to: unit)
+        }
+        if let load = set.actualLoadTenths {
+            set.actualLoadTenths = set.unit.converted(loadTenths: load, to: unit)
+        }
+        set.unit = unit
+        try? modelContext.save()
     }
 }
 
@@ -245,7 +320,7 @@ private struct FinishWorkoutView: View {
                     LabeledContent("Длительность", value: durationText)
                     LabeledContent("Выполнено подходов", value: "\(completedCount)")
                     if incompleteCount > 0 {
-                        Label("Не заполнено: \(incompleteCount)", systemImage: "exclamationmark.triangle.fill")
+                        Label("Без веса или повторов: \(incompleteCount)", systemImage: "exclamationmark.triangle.fill")
                             .foregroundStyle(.orange)
                     }
                 }
@@ -289,8 +364,8 @@ private struct FinishWorkoutView: View {
         let normalizedWeight = bodyWeight.replacingOccurrences(of: ",", with: ".")
         if let value = Double(normalizedWeight) {
             let day = Calendar.current.startOfDay(for: .now)
-            let entries = (try? modelContext.fetch(FetchDescriptor<BodyWeightEntry>())) ?? []
-            if let existing = entries.first(where: { Calendar.current.isDate($0.day, inSameDayAs: day) }) {
+            let descriptor = FetchDescriptor<BodyWeightEntry>(predicate: #Predicate { $0.day == day })
+            if let existing = try? modelContext.fetch(descriptor).first {
                 existing.weightTenthsKg = Int((value * 10).rounded())
             } else {
                 modelContext.insert(BodyWeightEntry(day: day, weightTenthsKg: Int((value * 10).rounded())))
@@ -298,8 +373,8 @@ private struct FinishWorkoutView: View {
         }
 
         if let scheduledID = session.scheduledWorkoutID {
-            let schedules = (try? modelContext.fetch(FetchDescriptor<ScheduledWorkout>())) ?? []
-            if let schedule = schedules.first(where: { $0.id == scheduledID }) {
+            let descriptor = FetchDescriptor<ScheduledWorkout>(predicate: #Predicate { $0.id == scheduledID })
+            if let schedule = try? modelContext.fetch(descriptor).first {
                 schedule.status = .completed
                 schedule.sessionID = session.id
                 NotificationService.cancel(workoutID: schedule.id)

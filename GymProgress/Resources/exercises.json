@@ -3,12 +3,21 @@
     "id": "0025",
     "sourceName": "barbell bench press",
     "name": "Жим штанги лёжа",
-    "primaryMuscles": ["Грудь"],
-    "secondaryMuscles": ["Передняя дельта", "Трицепс"],
+    "primaryMuscles": [
+      "Грудь"
+    ],
+    "secondaryMuscles": [
+      "Передняя дельта",
+      "Трицепс"
+    ],
     "equipment": "Штанга и скамья",
     "gifName": "0025-EIeI8Vf.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Сведите лопатки и устойчиво поставьте стопы.", "Опускайте гриф к середине груди под контролем.", "Не отрывайте таз от скамьи."],
+    "technique": [
+      "Сведите лопатки и устойчиво поставьте стопы.",
+      "Опускайте гриф к середине груди под контролем.",
+      "Не отрывайте таз от скамьи."
+    ],
     "loadMode": "total",
     "defaultUnit": "kg"
   },
@@ -16,12 +25,21 @@
     "id": "0652",
     "sourceName": "pull-up",
     "name": "Подтягивания",
-    "primaryMuscles": ["Широчайшие"],
-    "secondaryMuscles": ["Бицепс", "Задняя дельта"],
+    "primaryMuscles": [
+      "Широчайшие"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Задняя дельта"
+    ],
     "equipment": "Турник",
     "gifName": "0652-lBDjFxJ.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Начинайте движение сведением лопаток.", "Тяните грудь к перекладине без раскачки.", "Опускайтесь до контролируемого полного разгибания рук."],
+    "technique": [
+      "Начинайте движение сведением лопаток.",
+      "Тяните грудь к перекладине без раскачки.",
+      "Опускайтесь до контролируемого полного разгибания рук."
+    ],
     "loadMode": "additionalBodyweight",
     "defaultUnit": "kg"
   },
@@ -29,12 +47,22 @@
     "id": "0861",
     "sourceName": "cable seated row",
     "name": "Тяга горизонтального блока",
-    "primaryMuscles": ["Широчайшие", "Ромбовидные"],
-    "secondaryMuscles": ["Бицепс", "Задняя дельта"],
+    "primaryMuscles": [
+      "Широчайшие",
+      "Ромбовидные"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Задняя дельта"
+    ],
     "equipment": "Блочный тренажёр",
     "gifName": "0861-fUBheHs.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Сохраняйте нейтральное положение спины.", "Тяните рукоять к нижней части живота.", "В конце движения сведите лопатки, не отклоняясь назад."],
+    "technique": [
+      "Сохраняйте нейтральное положение спины.",
+      "Тяните рукоять к нижней части живота.",
+      "В конце движения сведите лопатки, не отклоняясь назад."
+    ],
     "loadMode": "total",
     "defaultUnit": "lb"
   },
@@ -42,12 +70,21 @@
     "id": "0405",
     "sourceName": "dumbbell seated shoulder press",
     "name": "Жим гантелей сидя",
-    "primaryMuscles": ["Передняя дельта", "Средняя дельта"],
-    "secondaryMuscles": ["Трицепс"],
+    "primaryMuscles": [
+      "Передняя дельта",
+      "Средняя дельта"
+    ],
+    "secondaryMuscles": [
+      "Трицепс"
+    ],
     "equipment": "Гантели и скамья",
     "gifName": "0405-znQUdHY.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Прижмите спину к опоре и держите корпус стабильным.", "Выжимайте гантели вверх без удара друг о друга.", "Не прогибайтесь в пояснице."],
+    "technique": [
+      "Прижмите спину к опоре и держите корпус стабильным.",
+      "Выжимайте гантели вверх без удара друг о друга.",
+      "Не прогибайтесь в пояснице."
+    ],
     "loadMode": "perHand",
     "defaultUnit": "kg"
   },
@@ -55,12 +92,20 @@
     "id": "0334",
     "sourceName": "dumbbell lateral raise",
     "name": "Махи гантелями в стороны",
-    "primaryMuscles": ["Средняя дельта"],
-    "secondaryMuscles": ["Трапеция"],
+    "primaryMuscles": [
+      "Средняя дельта"
+    ],
+    "secondaryMuscles": [
+      "Трапеция"
+    ],
     "equipment": "Гантели",
     "gifName": "0334-DsgkuIt.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Слегка согните локти и зафиксируйте их угол.", "Поднимайте локти примерно до уровня плеч.", "Не помогайте себе раскачкой корпуса."],
+    "technique": [
+      "Слегка согните локти и зафиксируйте их угол.",
+      "Поднимайте локти примерно до уровня плеч.",
+      "Не помогайте себе раскачкой корпуса."
+    ],
     "loadMode": "perHand",
     "defaultUnit": "kg"
   },
@@ -68,12 +113,20 @@
     "id": "0372",
     "sourceName": "dumbbell preacher curl",
     "name": "Сгибание рук на скамье Скотта",
-    "primaryMuscles": ["Бицепс"],
-    "secondaryMuscles": ["Предплечья"],
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
     "equipment": "Гантели и скамья Скотта",
     "gifName": "0372-jivWf8n.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Плотно прижмите плечо к опоре.", "Сгибайте руку без движения плеча.", "Опускайте гантель медленно, не переразгибая локоть."],
+    "technique": [
+      "Плотно прижмите плечо к опоре.",
+      "Сгибайте руку без движения плеча.",
+      "Опускайте гантель медленно, не переразгибая локоть."
+    ],
     "loadMode": "perHand",
     "defaultUnit": "kg"
   },
@@ -81,12 +134,18 @@
     "id": "0200",
     "sourceName": "cable pushdown (with rope attachment)",
     "name": "Разгибание рук с канатом",
-    "primaryMuscles": ["Трицепс"],
+    "primaryMuscles": [
+      "Трицепс"
+    ],
     "secondaryMuscles": [],
     "equipment": "Блочный тренажёр и канат",
     "gifName": "0200-dU605di.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Зафиксируйте локти рядом с корпусом.", "Разгибайте руки вниз без движения плеч.", "Внизу слегка разведите концы каната."],
+    "technique": [
+      "Зафиксируйте локти рядом с корпусом.",
+      "Разгибайте руки вниз без движения плеч.",
+      "Внизу слегка разведите концы каната."
+    ],
     "loadMode": "total",
     "defaultUnit": "kg"
   },
@@ -94,12 +153,21 @@
     "id": "1463",
     "sourceName": "sled 45° leg press (side pov)",
     "name": "Жим ногами",
-    "primaryMuscles": ["Квадрицепс", "Ягодицы"],
-    "secondaryMuscles": ["Бицепс бедра"],
+    "primaryMuscles": [
+      "Квадрицепс",
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Бицепс бедра"
+    ],
     "equipment": "Тренажёр для жима ногами",
     "gifName": "1463-2Qh2J1e.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Прижмите поясницу и таз к спинке.", "Колени направляйте по линии носков.", "Не выпрямляйте колени в жёсткий замок."],
+    "technique": [
+      "Прижмите поясницу и таз к спинке.",
+      "Колени направляйте по линии носков.",
+      "Не выпрямляйте колени в жёсткий замок."
+    ],
     "loadMode": "total",
     "defaultUnit": "kg"
   },
@@ -107,12 +175,21 @@
     "id": "0488",
     "sourceName": "hyperextension (on bench)",
     "name": "Гиперэкстензия",
-    "primaryMuscles": ["Разгибатели спины"],
-    "secondaryMuscles": ["Ягодицы", "Бицепс бедра"],
+    "primaryMuscles": [
+      "Разгибатели спины"
+    ],
+    "secondaryMuscles": [
+      "Ягодицы",
+      "Бицепс бедра"
+    ],
     "equipment": "Скамья для гиперэкстензии",
     "gifName": "0488-zkgRrbK.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Опора должна находиться ниже тазобедренного сустава.", "Двигайтесь за счёт сгибания в тазобедренном суставе.", "Не переразгибайте поясницу в верхней точке."],
+    "technique": [
+      "Опора должна находиться ниже тазобедренного сустава.",
+      "Двигайтесь за счёт сгибания в тазобедренном суставе.",
+      "Не переразгибайте поясницу в верхней точке."
+    ],
     "loadMode": "additionalBodyweight",
     "defaultUnit": "kg"
   },
@@ -120,12 +197,21 @@
     "id": "0586",
     "sourceName": "lever lying leg curl",
     "name": "Сгибание ног лёжа",
-    "primaryMuscles": ["Бицепс бедра"],
-    "secondaryMuscles": ["Икроножные", "Ягодицы"],
+    "primaryMuscles": [
+      "Бицепс бедра"
+    ],
+    "secondaryMuscles": [
+      "Икроножные",
+      "Ягодицы"
+    ],
     "equipment": "Тренажёр для сгибания ног",
     "gifName": "0586-17lJ1kr.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Совместите колени с осью тренажёра.", "Не отрывайте таз от скамьи.", "Сгибайте и опускайте ноги под контролем."],
+    "technique": [
+      "Совместите колени с осью тренажёра.",
+      "Не отрывайте таз от скамьи.",
+      "Сгибайте и опускайте ноги под контролем."
+    ],
     "loadMode": "total",
     "defaultUnit": "kg"
   },
@@ -133,12 +219,18 @@
     "id": "0585",
     "sourceName": "lever leg extension",
     "name": "Разгибание ног сидя",
-    "primaryMuscles": ["Квадрицепс"],
+    "primaryMuscles": [
+      "Квадрицепс"
+    ],
     "secondaryMuscles": [],
     "equipment": "Тренажёр для разгибания ног",
     "gifName": "0585-my33uHU.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Совместите колени с осью тренажёра.", "Прижмите спину и таз к сиденью.", "Разгибайте ноги плавно, не бросайте вес вниз."],
+    "technique": [
+      "Совместите колени с осью тренажёра.",
+      "Прижмите спину и таз к сиденью.",
+      "Разгибайте ноги плавно, не бросайте вес вниз."
+    ],
     "loadMode": "total",
     "defaultUnit": "kg"
   },
@@ -146,12 +238,20 @@
     "id": "0605",
     "sourceName": "lever standing calf raise",
     "name": "Подъём на носки стоя",
-    "primaryMuscles": ["Икроножные"],
-    "secondaryMuscles": ["Камбаловидные"],
+    "primaryMuscles": [
+      "Икроножные"
+    ],
+    "secondaryMuscles": [
+      "Камбаловидные"
+    ],
     "equipment": "Тренажёр для икр",
     "gifName": "0605-ykUOVze.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Держите колени почти прямыми, но не блокируйте их.", "Опускайте пятки до комфортного растяжения.", "Поднимайтесь на носки без пружинящих движений."],
+    "technique": [
+      "Держите колени почти прямыми, но не блокируйте их.",
+      "Опускайте пятки до комфортного растяжения.",
+      "Поднимайтесь на носки без пружинящих движений."
+    ],
     "loadMode": "total",
     "defaultUnit": "kg"
   },
@@ -159,12 +259,18 @@
     "id": "0598",
     "sourceName": "lever seated hip adduction",
     "name": "Сведение бёдер",
-    "primaryMuscles": ["Приводящие мышцы"],
+    "primaryMuscles": [
+      "Приводящие мышцы"
+    ],
     "secondaryMuscles": [],
     "equipment": "Тренажёр для сведения бёдер",
     "gifName": "0598-oHsrypV.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Прижмите спину к опоре.", "Сводите бёдра без рывка.", "Возвращайте вес медленно, сохраняя контроль."],
+    "technique": [
+      "Прижмите спину к опоре.",
+      "Сводите бёдра без рывка.",
+      "Возвращайте вес медленно, сохраняя контроль."
+    ],
     "loadMode": "total",
     "defaultUnit": "kg"
   },
@@ -172,12 +278,21 @@
     "id": "0047",
     "sourceName": "barbell incline bench press",
     "name": "Жим штанги под углом",
-    "primaryMuscles": ["Верх груди"],
-    "secondaryMuscles": ["Передняя дельта", "Трицепс"],
+    "primaryMuscles": [
+      "Верх груди"
+    ],
+    "secondaryMuscles": [
+      "Передняя дельта",
+      "Трицепс"
+    ],
     "equipment": "Штанга и наклонная скамья",
     "gifName": "0047-3TZduzM.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Зафиксируйте лопатки и стопы.", "Опускайте гриф к верхней части груди.", "Не поднимайте плечи к ушам при жиме."],
+    "technique": [
+      "Зафиксируйте лопатки и стопы.",
+      "Опускайте гриф к верхней части груди.",
+      "Не поднимайте плечи к ушам при жиме."
+    ],
     "loadMode": "total",
     "defaultUnit": "kg"
   },
@@ -185,12 +300,20 @@
     "id": "0596",
     "sourceName": "lever seated fly",
     "name": "Разведение на грудь",
-    "primaryMuscles": ["Грудь"],
-    "secondaryMuscles": ["Передняя дельта"],
+    "primaryMuscles": [
+      "Грудь"
+    ],
+    "secondaryMuscles": [
+      "Передняя дельта"
+    ],
     "equipment": "Тренажёр «бабочка»",
     "gifName": "0596-v3xmPAR.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Прижмите спину к сиденью.", "Сохраняйте небольшой сгиб в локтях.", "Сводите рукояти за счёт груди, не толкайте плечами."],
+    "technique": [
+      "Прижмите спину к сиденью.",
+      "Сохраняйте небольшой сгиб в локтях.",
+      "Сводите рукояти за счёт груди, не толкайте плечами."
+    ],
     "loadMode": "total",
     "defaultUnit": "kg"
   },
@@ -198,12 +321,21 @@
     "id": "0602",
     "sourceName": "lever seated reverse fly",
     "name": "Обратная бабочка",
-    "primaryMuscles": ["Задняя дельта"],
-    "secondaryMuscles": ["Ромбовидные", "Трапеция"],
+    "primaryMuscles": [
+      "Задняя дельта"
+    ],
+    "secondaryMuscles": [
+      "Ромбовидные",
+      "Трапеция"
+    ],
     "equipment": "Тренажёр «бабочка»",
     "gifName": "0602-myfUsKf.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Прижмите грудь к опоре.", "Ведите движение локтями назад.", "Не поднимайте плечи и не прогибайте спину."],
+    "technique": [
+      "Прижмите грудь к опоре.",
+      "Ведите движение локтями назад.",
+      "Не поднимайте плечи и не прогибайте спину."
+    ],
     "loadMode": "total",
     "defaultUnit": "kg"
   },
@@ -211,12 +343,21 @@
     "id": "0313",
     "sourceName": "dumbbell hammer curl",
     "name": "Молотковые сгибания",
-    "primaryMuscles": ["Бицепс", "Плечевая мышца"],
-    "secondaryMuscles": ["Предплечья"],
+    "primaryMuscles": [
+      "Бицепс",
+      "Плечевая мышца"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
     "equipment": "Гантели",
     "gifName": "0313-slDvUAU.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Держите ладони обращёнными друг к другу.", "Зафиксируйте локти рядом с корпусом.", "Не раскачивайтесь и медленно опускайте гантели."],
+    "technique": [
+      "Держите ладони обращёнными друг к другу.",
+      "Зафиксируйте локти рядом с корпусом.",
+      "Не раскачивайтесь и медленно опускайте гантели."
+    ],
     "loadMode": "perHand",
     "defaultUnit": "kg"
   },
@@ -224,13 +365,1806 @@
     "id": "1749",
     "sourceName": "ez bar standing french press",
     "name": "Французский жим",
-    "primaryMuscles": ["Трицепс"],
+    "primaryMuscles": [
+      "Трицепс"
+    ],
     "secondaryMuscles": [],
-    "equipment": "EZ-гриф",
+    "equipment": "Изогнутый гриф",
     "gifName": "1749-1cTf2Ux.gif",
     "attribution": "© Gym visual — https://gymvisual.com/",
-    "technique": ["Держите локти направленными вперёд.", "Сгибайте только локтевые суставы.", "Сохраняйте корпус и плечи неподвижными."],
+    "technique": [
+      "Держите локти направленными вперёд.",
+      "Сгибайте только локтевые суставы.",
+      "Сохраняйте корпус и плечи неподвижными."
+    ],
     "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0033",
+    "sourceName": "barbell decline bench press",
+    "name": "Жим штанги на наклонной скамье вниз головой",
+    "primaryMuscles": [
+      "Грудь"
+    ],
+    "secondaryMuscles": [
+      "Трицепс",
+      "Дельты"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0033-GrO65fd.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Лягте на наклонную скамью, зафиксировав ноги и опустив голову ниже бедер.",
+      "Возьмите штангу хватом сверху на расстоянии чуть шире плеч.",
+      "Ослабьте штангу и медленно опустите ее к груди, держа локти прижатыми."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0030",
+    "sourceName": "barbell close-grip bench press",
+    "name": "Жим штанги лёжа узким хватом",
+    "primaryMuscles": [
+      "Трицепс"
+    ],
+    "secondaryMuscles": [
+      "Грудь",
+      "Дельты"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0030-J6Dx1Mu.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Лягте на скамью, поставьте ступни на землю и прижмите спину к скамье.",
+      "Возьмите штангу узким хватом, на расстоянии чуть уже ширины плеч.",
+      "Снимите штангу и медленно опустите ее к груди, держа локти близко к телу."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0043",
+    "sourceName": "barbell full squat",
+    "name": "Приседания со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0043-qXTaZnJ.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, носки слегка развернуты наружу.",
+      "Держите штангу на верхней части спины, опираясь на трапеции или задние дельты.",
+      "Напрягите корпус и держите грудь поднятой, когда начинаете опускать тело вниз."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0042",
+    "sourceName": "barbell front squat",
+    "name": "Фронтальные приседания со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0042-zG0zs85.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Для начала встаньте, поставив ноги на ширине плеч, носки слегка развернуты наружу.",
+      "Держите штангу перед плечами, положив ее на ключицы и плечи.",
+      "Напрягите корпус и держите грудь поднятой, опуская тело в присед, отводя бедра назад и сгибая колени."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0032",
+    "sourceName": "barbell deadlift",
+    "name": "Становая тяга со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Бицепс бедра",
+      "Поясница"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0032-ila4NZS.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, положите штангу на землю перед собой.",
+      "Согните колени и наклоните бедра, чтобы опустить туловище и взять штангу хватом сверху, руки на расстоянии чуть шире плеч.",
+      "Держите спину прямо, а грудь приподнятой, пока вы двигаетесь пятками, чтобы поднять штангу с земли, вытягивая бедра и колени."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0085",
+    "sourceName": "barbell romanian deadlift",
+    "name": "Румынская тяга со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Бицепс бедра",
+      "Поясница"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0085-wQ2c4XD.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, поставив ноги на ширине плеч, носки ног направлены вперед.",
+      "Возьмите штангу хватом сверху, руки чуть шире плеч.",
+      "Согните бедра, сохраняя спину прямой и слегка согнутыми в коленях."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0117",
+    "sourceName": "barbell sumo deadlift",
+    "name": "Сумо-тяга со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Бицепс бедра",
+      "Квадрицепс"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0117-KgI0tqW.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, расставив ноги шире плеч, носки наружу.",
+      "Положите штангу на землю перед собой по центру между стопами.",
+      "Согните ноги в коленях и опустите бедра, держа спину прямо и грудь вверх, чтобы взять штангу хватом сверху."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0027",
+    "sourceName": "barbell bent over row",
+    "name": "Тяга штанги в наклоне",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0027-eZyBC3j.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч и слегка согнуты в коленях.",
+      "Наклонитесь вперед в бедрах, сохраняя спину прямой и грудь вверх.",
+      "Возьмите штангу хватом сверху, руки на расстоянии чуть шире плеч."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3017",
+    "sourceName": "barbell pendlay row",
+    "name": "Тяга Пендли",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Штанга",
+    "gifName": "3017-r0z6xzQ.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, поставив ноги на ширине плеч и слегка согнув колени.",
+      "Наклонитесь вперед в бедрах, держа спину прямо и грудь вверх.",
+      "Возьмите штангу хватом сверху, на расстоянии чуть шире плеч."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0120",
+    "sourceName": "barbell upright row",
+    "name": "Тяга штанги к подбородку",
+    "primaryMuscles": [
+      "Дельты"
+    ],
+    "secondaryMuscles": [
+      "Трапеция",
+      "Бицепс"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0120-UDlhcO8.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, возьмите штангу хватом сверху, руки расставлены чуть шире плеч.",
+      "Пусть штанга висит перед бедрами, руки полностью выпрямлены.",
+      "Удерживая спину прямой и напряженным корпус, выдохните и поднимите штангу прямо вверх к подбородку, ведя локтями."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0031",
+    "sourceName": "barbell curl",
+    "name": "Сгибание рук со штангой",
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0031-25GPyDY.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте прямо, ноги на ширине плеч, возьмите штангу обратным хватом ладонями вперед.",
+      "Держите локти близко к туловищу и выдыхайте, сгибая штангу и одновременно сокращая бицепсы.",
+      "Продолжайте поднимать штангу до тех пор, пока ваши бицепсы полностью не сократятся и штанга не окажется на уровне плеч."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0070",
+    "sourceName": "barbell preacher curl",
+    "name": "Сгибание рук на скамье Скотта",
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0070-qOgPVf6.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Сядьте на скамью для проповедника, положив плечи на подушку и грудь на опору.",
+      "Возьмите штангу хватом снизу, на расстоянии чуть шире ширины плеч.",
+      "Удерживая плечи неподвижно, выдохните и поднимите штангу к плечам."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0061",
+    "sourceName": "barbell lying triceps extension",
+    "name": "Французский жим лёжа со штангой",
+    "primaryMuscles": [
+      "Трицепс"
+    ],
+    "secondaryMuscles": [
+      "Дельты"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0061-iZop9xO.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Лягте на скамью, положив ноги на землю, а голову на край скамьи.",
+      "Возьмите штангу хватом сверху, руки на ширине плеч, вытяните руки вверх над грудью.",
+      "Удерживая плечи неподвижно, медленно опустите штангу ко лбу, сгибая локти."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1409",
+    "sourceName": "barbell glute bridge",
+    "name": "Ягодичный мост со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Бицепс бедра",
+      "Поясница"
+    ],
+    "equipment": "Штанга",
+    "gifName": "1409-qKBpF7I.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Начните с того, что лягте на спину на землю, согните колени и поставьте ступни на пол.",
+      "Положите штангу на бедра, крепко удерживая ее обеими руками.",
+      "Задействуйте ягодицы и мышцы корпуса, затем поднимите бедра от земли, пока ваше тело не образует прямую линию от колен до плеч."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0054",
+    "sourceName": "barbell lunge",
+    "name": "Выпады со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0054-t8iSghb.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Начните с того, что встаньте, поставив ноги на ширине плеч и положив штангу на верхнюю часть спины.",
+      "Сделайте шаг вперед правой ногой, удерживая туловище в вертикальном положении.",
+      "Опустите тело, согнув правое колено, пока бедро не станет параллельно земле."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0044",
+    "sourceName": "barbell good morning",
+    "name": "Наклоны со штангой «доброе утро»",
+    "primaryMuscles": [
+      "Бицепс бедра"
+    ],
+    "secondaryMuscles": [
+      "Поясница"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0044-XlZ4lAC.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Начните с того, что встаньте, поставив ноги на ширине плеч и положив штангу на верхнюю часть спины.",
+      "Удерживая спину прямой и напряженным корпус, наклонитесь вперед в бедрах, отводя ягодицы назад, как будто вы пытаетесь коснуться ягодицами стены позади себя.",
+      "Опускайте туловище до тех пор, пока оно не станет параллельно земле, чувствуя растяжение подколенных сухожилий."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0289",
+    "sourceName": "dumbbell bench press",
+    "name": "Жим гантелей лёжа",
+    "primaryMuscles": [
+      "Грудь"
+    ],
+    "secondaryMuscles": [
+      "Трицепс",
+      "Дельты"
+    ],
+    "equipment": "Гантели",
+    "gifName": "0289-SpYC0Kp.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Лягте на скамью, поставьте ступни на землю и прижмите спину к скамье.",
+      "Возьмите по гантели в каждую руку ладонями вперед и руками, вытянутыми над грудью.",
+      "Медленно опустите гантели по бокам груди, держа локти под углом 90 градусов."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0314",
+    "sourceName": "dumbbell incline bench press",
+    "name": "Жим гантелей на наклонной скамье",
+    "primaryMuscles": [
+      "Грудь"
+    ],
+    "secondaryMuscles": [
+      "Дельты",
+      "Трицепс"
+    ],
+    "equipment": "Гантели",
+    "gifName": "0314-ns0SIbU.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Установите наклонную скамью под углом 45 градусов.",
+      "Сядьте на скамью, поставьте ноги на землю и плотно прижмите спину к скамье.",
+      "Возьмите по гантели в каждую руку ладонями вперед и поднимите их на высоту плеч."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0308",
+    "sourceName": "dumbbell fly",
+    "name": "Разводка гантелей лёжа",
+    "primaryMuscles": [
+      "Грудь"
+    ],
+    "secondaryMuscles": [
+      "Дельты"
+    ],
+    "equipment": "Гантели",
+    "gifName": "0308-yz9nUhF.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Лягте на скамью, взяв в каждую руку по гантели, ладони обращены друг к другу.",
+      "Вытяните руки прямо вверх над грудью, слегка согнув их в локтях.",
+      "Сохраняя небольшой изгиб в локтях, опустите руки в стороны по широкой дуге, пока не почувствуете растяжение в груди."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0293",
+    "sourceName": "dumbbell bent over row",
+    "name": "Тяга гантелей в наклоне",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Гантели",
+    "gifName": "0293-BJ0Hz5L.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, колени слегка согнуты, в каждой руке держите по гантели ладонями к телу.",
+      "Наклонитесь вперед в бедрах, сохраняя спину прямой и напряженный корпус.",
+      "Пусть ваши руки свисают прямо к полу, слегка согнутые в локтях."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0310",
+    "sourceName": "dumbbell front raise",
+    "name": "Подъём гантелей перед собой",
+    "primaryMuscles": [
+      "Дельты"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Трапеция"
+    ],
+    "equipment": "Гантели",
+    "gifName": "0310-3eGE2JC.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, держите по гантели в каждой руке ладонями к бедрам.",
+      "Держа руки прямыми, выдохните и поднимите гантели перед собой до уровня плеч.",
+      "Задержитесь на мгновение в верхней точке, затем вдохните и медленно опустите гантели обратно в исходное положение."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1659",
+    "sourceName": "dumbbell hammer curl on exercise ball",
+    "name": "Молотковые сгибания на фитболе",
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Гантели",
+    "gifName": "1659-fY68AyX.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Сядьте на гимнастический мяч, поставив ноги на землю и выпрямив спину.",
+      "Возьмите по гантели в каждую руку ладонями к телу и полностью выпрямленными руками.",
+      "Удерживая плечи неподвижно, выдохните и согните гантели, одновременно напрягая бицепсы."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0294",
+    "sourceName": "dumbbell biceps curl",
+    "name": "Сгибание рук с гантелями",
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Гантели",
+    "gifName": "0294-NbVPDMW.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте прямо, взяв в каждую руку по гантели, ладони направлены вперед, руки полностью выпрямлены.",
+      "Удерживая плечи неподвижно, выдохните и согните гири, одновременно сокращая бицепсы.",
+      "Продолжайте поднимать гири до тех пор, пока ваши бицепсы полностью не сократятся и гантели не окажутся на уровне плеч."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1760",
+    "sourceName": "dumbbell goblet squat",
+    "name": "Приседания с гантелью у груди",
+    "primaryMuscles": [
+      "Квадрицепс"
+    ],
+    "secondaryMuscles": [
+      "Ягодицы",
+      "Бицепс бедра"
+    ],
+    "equipment": "Гантели",
+    "gifName": "1760-yn8yg1r.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, удерживая гантель вертикально у груди обеими руками.",
+      "Удерживая грудь поднятой и напряженным корпус, опустите тело в присед, отведя бедра назад и согнув колени.",
+      "Продолжайте опускаться до тех пор, пока ваши бедра не станут параллельны земле или настолько низко, насколько вам будет удобно."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0336",
+    "sourceName": "dumbbell lunge",
+    "name": "Выпады с гантелями",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Гантели",
+    "gifName": "0336-RRWFUcw.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, держа в каждой руке по гантели.",
+      "Сделайте шаг вперед правой ногой, опуская тело в положение выпада.",
+      "При опускании тела держите спину прямо и грудь вверх."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1459",
+    "sourceName": "dumbbell romanian deadlift",
+    "name": "Румынская тяга с гантелями",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Бицепс бедра",
+      "Поясница"
+    ],
+    "equipment": "Гантели",
+    "gifName": "1459-rR0LJzx.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, держите по гантели в каждой руке хватом сверху.",
+      "Удерживая спину прямой, а корпус напряженным, наклонитесь в бедрах и опустите гантели к земле, слегка согнув колени.",
+      "Опускайте гантели до тех пор, пока не почувствуете растяжение подколенных сухожилий, затем надавите на пятки и задействуйте ягодицы, чтобы вернуться в исходное положение."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "2330",
+    "sourceName": "cable lat pulldown full range of motion",
+    "name": "Тяга верхнего блока полной амплитудой",
+    "primaryMuscles": [
+      "Широчайшие"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Ромбовидные"
+    ],
+    "equipment": "Блочный тренажёр",
+    "gifName": "2330-LEprlgG.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Сядьте на тренажер для тяги широчайших, расположив колени под подушечками.",
+      "Возьмитесь за перекладину хватом сверху, на расстоянии чуть шире ширины плеч.",
+      "Слегка откиньтесь назад и держите грудь вверх, сохраняя небольшой изгиб в пояснице."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0241",
+    "sourceName": "cable triceps pushdown (v-bar)",
+    "name": "Разгибание рук на блоке с В-образной рукоятью",
+    "primaryMuscles": [
+      "Трицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Блочный тренажёр",
+    "gifName": "0241-gAwDzB3.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Прикрепите В-образную насадку к тросовому станку на самой высокой скорости.",
+      "Встаньте лицом к канатному тренажеру, поставив ноги на ширине плеч.",
+      "Возьмитесь за В-образную перекладину хватом сверху, ладонями вниз, руки на ширине плеч."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0868",
+    "sourceName": "cable curl",
+    "name": "Сгибание рук на нижнем блоке",
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Блочный тренажёр",
+    "gifName": "0868-G08RZcQ.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте лицом к канатному тренажеру, поставив ноги на ширине плеч.",
+      "Возьмитесь за блочное крепление снизу ладонями вверх.",
+      "Держите локти близко к бокам, а плечи неподвижно."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0178",
+    "sourceName": "cable lateral raise",
+    "name": "Подъём руки в сторону на блоке",
+    "primaryMuscles": [
+      "Дельты"
+    ],
+    "secondaryMuscles": [
+      "Трапеция",
+      "Трицепс"
+    ],
+    "equipment": "Блочный тренажёр",
+    "gifName": "0178-goJ6ezq.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, возьмитесь за рукоятки троса хватом сверху.",
+      "Держите руки прямыми и напряженным корпусом.",
+      "Поднимите руки в стороны, пока они не станут параллельны полу."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0196",
+    "sourceName": "cable pull through (with rope)",
+    "name": "Тяга каната между ног",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Бицепс бедра",
+      "Поясница"
+    ],
+    "equipment": "Блочный тренажёр",
+    "gifName": "0196-OM46QHm.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте лицом от блочного тренажера, поставив ноги на ширине плеч.",
+      "Возьмите веревку обеими руками и сделайте шаг вперед, создавая натяжение троса.",
+      "Согнитесь в бедрах и опустите верхнюю часть тела до тех пор, пока она не станет параллельной земле, сохраняя спину прямой."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0168",
+    "sourceName": "cable hip adduction",
+    "name": "Приведение бедра на блоке",
+    "primaryMuscles": [
+      "Приводящие мышцы"
+    ],
+    "secondaryMuscles": [
+      "Ягодицы",
+      "Квадрицепс"
+    ],
+    "equipment": "Блочный тренажёр",
+    "gifName": "0168-hBGWILP.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Прикрепите манжету на лодыжку и встаньте лицом к канатной машине.",
+      "Расположитесь достаточно далеко от машины, чтобы трос был натянут.",
+      "Положите руки на машину для поддержки."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0599",
+    "sourceName": "lever seated leg curl",
+    "name": "Сгибание ног сидя в тренажёре",
+    "primaryMuscles": [
+      "Бицепс бедра"
+    ],
+    "secondaryMuscles": [
+      "Икры"
+    ],
+    "equipment": "Рычажный тренажёр",
+    "gifName": "0599-Zg3XY7P.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Отрегулируйте машину по размеру вашего тела и сядьте на нее, прижавшись спиной к спинке сиденья.",
+      "Поместите голени под мягкий рычаг, чуть выше лодыжек.",
+      "Возьмитесь за ручки по бокам машины для поддержки."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0594",
+    "sourceName": "lever seated calf raise",
+    "name": "Подъём на носки сидя в тренажёре",
+    "primaryMuscles": [
+      "Икры"
+    ],
+    "secondaryMuscles": [
+      "Камбаловидные",
+      "Стабилизаторы голеностопа"
+    ],
+    "equipment": "Рычажный тренажёр",
+    "gifName": "0594-bOOdeyc.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Отрегулируйте высоту сиденья так, чтобы ваши колени были слегка согнуты, а ступни лежали на подножке.",
+      "Поместите пальцы ног на подножку так, чтобы пятки свисали с края.",
+      "Возьмитесь за ручки или боковые стороны сиденья для устойчивости."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0577",
+    "sourceName": "lever chest press",
+    "name": "Жим от груди в тренажёре",
+    "primaryMuscles": [
+      "Грудь"
+    ],
+    "secondaryMuscles": [
+      "Трицепс",
+      "Дельты"
+    ],
+    "equipment": "Рычажный тренажёр",
+    "gifName": "0577-T0yTjgW.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Отрегулируйте высоту сиденья и расположитесь на тренажере, прижавшись спиной к подушке.",
+      "Возьмитесь за рукоятки хватом сверху и расположите локти под углом 90 градусов.",
+      "Толкайте ручки вперед до полного выпрямления рук, выдыхая во время движения."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0603",
+    "sourceName": "lever shoulder press",
+    "name": "Жим над головой в тренажёре",
+    "primaryMuscles": [
+      "Дельты"
+    ],
+    "secondaryMuscles": [
+      "Трицепс",
+      "Грудь"
+    ],
+    "equipment": "Рычажный тренажёр",
+    "gifName": "0603-67n3r98.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Отрегулируйте высоту сиденья и расположитесь на машине спиной к спинке сиденья.",
+      "Возьмитесь за рукоятки верхним хватом и расположите руки на уровне плеч.",
+      "Толкайте ручки вверх до тех пор, пока руки полностью не выпрямятся, но не сгибайте локти."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0584",
+    "sourceName": "lever lateral raise",
+    "name": "Разведение рук в стороны в тренажёре",
+    "primaryMuscles": [
+      "Дельты"
+    ],
+    "secondaryMuscles": [
+      "Трапеция",
+      "Верх спины"
+    ],
+    "equipment": "Рычажный тренажёр",
+    "gifName": "0584-dRTfGZT.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Отрегулируйте высоту сиденья и расположитесь на тренажере спиной к подушке.",
+      "Возьмитесь за рукоятки прямым хватом и держите руки прямыми.",
+      "Выдохните и поднимите руки в стороны, пока они не станут параллельны полу."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0015",
+    "sourceName": "assisted parallel close grip pull-up",
+    "name": "Подтягивания узким параллельным хватом с поддержкой",
+    "primaryMuscles": [
+      "Широчайшие"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Рычажный тренажёр",
+    "gifName": "0015-vrhHa6D.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Настройте машину на желаемый вес и рост.",
+      "Положите руки на параллельные брусья узким хватом, ладонями друг к другу.",
+      "Повисните на перекладинах, полностью вытянув руки и оторвав ноги от земли."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1326",
+    "sourceName": "chin-up",
+    "name": "Подтягивания обратным хватом",
+    "primaryMuscles": [
+      "Широчайшие"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "1326-T2mxWqc.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Повисните на перекладине, повернув ладонями к себе и расставив руки на ширине плеч.",
+      "Напрягите корпус и подтяните тело к перекладине, ведя грудью.",
+      "Продолжайте тянуть, пока подбородок не окажется над перекладиной."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0662",
+    "sourceName": "push-up",
+    "name": "Отжимания от пола",
+    "primaryMuscles": [
+      "Грудь"
+    ],
+    "secondaryMuscles": [
+      "Трицепс",
+      "Дельты"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "0662-I4hDWkc.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Начните с позиции высокой планки, расставив руки чуть шире плеч и поставив ноги вместе.",
+      "Напрягите корпус и опустите тело к земле, сгибая локти, удерживая тело на прямой линии.",
+      "Сделайте паузу на мгновение, когда ваша грудь окажется чуть выше земли, затем вернитесь в исходное положение, выпрямляя руки."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0009",
+    "sourceName": "assisted chest dip (kneeling)",
+    "name": "Отжимания на брусьях с поддержкой",
+    "primaryMuscles": [
+      "Грудь"
+    ],
+    "secondaryMuscles": [
+      "Трицепс",
+      "Дельты"
+    ],
+    "equipment": "Рычажный тренажёр",
+    "gifName": "0009-PAgTVaK.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Отрегулируйте машину на желаемую высоту и зафиксируйте колени на подставке.",
+      "Возьмитесь за ручки ладонями вниз и полностью выпрямите руки.",
+      "Опустите тело, сгибая локти, пока плечи не станут параллельны полу."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3168",
+    "sourceName": "bodyweight squatting row",
+    "name": "Тяга к себе в приседе с весом тела",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Дельты"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "3168-3xK09Sk.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, держитесь за прочный предмет или тренажер для подвешивания, вытянув руки.",
+      "Опустите тело в положение приседа, сохраняя спину прямой и колени за носками.",
+      "Из положения приседа подтяните тело вверх к предмету или тренажеру, сжимая лопатки вместе."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3544",
+    "sourceName": "bodyweight incline side plank",
+    "name": "Боковая планка на наклонной опоре",
+    "primaryMuscles": [
+      "Пресс"
+    ],
+    "secondaryMuscles": [
+      "Косые мышцы живота",
+      "Дельты"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "3544-5VXmnV5.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Начните с того, что лягте на бок, вытянув ноги и положив их друг на друга.",
+      "Положите предплечье на землю прямо под плечом, согнув локоть под углом 90 градусов.",
+      "Напрягите корпус и поднимите бедра от земли, создавая прямую линию от головы до ступней."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0972",
+    "sourceName": "band bicycle crunch",
+    "name": "Велосипед с резинкой",
+    "primaryMuscles": [
+      "Пресс"
+    ],
+    "secondaryMuscles": [
+      "Сгибатели бедра",
+      "Косые мышцы живота"
+    ],
+    "equipment": "Резиновая лента",
+    "gifName": "0972-tZkGYZ9.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Лягте на спину, заведите руки за голову и согните колени.",
+      "Поднимите ноги от земли и поднесите правое колено к груди, одновременно поворачивая туловище, чтобы поднести левый локоть к правому колену.",
+      "Выпрямите правую ногу, одновременно подтягивая левое колено к груди и поворачивая туловище так, чтобы правый локоть приблизился к левому колену."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0472",
+    "sourceName": "hanging leg raise",
+    "name": "Подъём ног в висе",
+    "primaryMuscles": [
+      "Пресс"
+    ],
+    "secondaryMuscles": [
+      "Сгибатели бедра"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "0472-I3tsCnC.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Повисните на перекладине, полностью вытянув руки и повернув ладони от себя.",
+      "Напрягите корпус и поднимите ноги перед собой, сохраняя их прямыми.",
+      "Продолжайте поднимать до тех пор, пока ваши ноги не станут параллельны земле или не станут настолько высоко, насколько вы сможете комфортно подняться."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0489",
+    "sourceName": "hyperextension",
+    "name": "Гиперэкстензия",
+    "primaryMuscles": [
+      "Разгибатели спины"
+    ],
+    "secondaryMuscles": [
+      "Ягодицы",
+      "Бицепс бедра"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "0489-zhMwOwE.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Отрегулируйте скамью для гиперэкстензии так, чтобы верхняя часть бедер опиралась на подушку, а ступни были зафиксированы.",
+      "Скрестите руки на груди или заведите руки за голову.",
+      "Опустите верхнюю часть тела к земле, сохраняя спину прямой."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1314",
+    "sourceName": "back extension on exercise ball",
+    "name": "Разгибание спины на фитболе",
+    "primaryMuscles": [
+      "Разгибатели спины"
+    ],
+    "secondaryMuscles": [
+      "Ягодицы",
+      "Бицепс бедра"
+    ],
+    "equipment": "Фитбол",
+    "gifName": "1314-qLpO4vV.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Положите мяч на землю и лягте на него лицом вниз, положив бедра на мяч, а ступни упираясь в стену или другую устойчивую поверхность.",
+      "Положите руки за голову или скрестите на груди.",
+      "Напрягите корпус и медленно поднимите верхнюю часть тела с мяча, вытягивая спину до тех пор, пока тело не образует прямую линию от головы до пяток."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3543",
+    "sourceName": "bodyweight drop jump squat",
+    "name": "Прыжковые приседания с весом тела",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "3543-wfotm7S.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч.",
+      "Опустите тело в присед, согнув колени и отведя бедра назад.",
+      "Резко подпрыгните вверх, вытягивая бедра, колени и лодыжки."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1769",
+    "sourceName": "bodyweight side lying biceps curl",
+    "name": "Сгибание рук лёжа на боку с весом тела",
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "1769-gscGLOU.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Лягте на бок, вытянув ноги и подперев голову рукой.",
+      "Прижмите плечо к боку и согните локоть, чтобы предплечье приблизилось к плечу.",
+      "Задержитесь на мгновение в верхней точке, затем медленно опустите предплечье обратно в исходное положение."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3167",
+    "sourceName": "bodyweight squatting row (with towel)",
+    "name": "Тяга к себе в приседе с полотенцем",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Дельты"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "3167-BReCuOn.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, держите перед собой полотенце ладонями вниз.",
+      "Согните ноги в коленях и опустите тело в положение приседа, держа спину прямо и грудь вверх.",
+      "Опускаясь в присед, одновременно подтягивайте полотенце к груди, сжимая лопатки вместе."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1373",
+    "sourceName": "bodyweight standing calf raise",
+    "name": "Подъём на носки стоя с весом тела",
+    "primaryMuscles": [
+      "Икры"
+    ],
+    "secondaryMuscles": [
+      "Голеностоп",
+      "Мышцы стоп"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "1373-bJYHBIN.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, носки направлены вперед.",
+      "Положите руки на стену или устойчивую поверхность для равновесия.",
+      "Медленно поднимите пятки от земли, перенеся вес тела на подушечки стоп."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3156",
+    "sourceName": "bodyweight standing close-grip one arm row",
+    "name": "Тяга одной рукой узким хватом с весом тела",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "3156-v2DfH14.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, колени слегка согнуты, в одной руке возьмите гантель нейтральным хватом.",
+      "Наклонитесь вперед в бедрах, сохраняя спину прямой и напряженный корпус.",
+      "Подтяните гантель к груди, держа локоть близко к телу и сжимая лопатки вместе."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3158",
+    "sourceName": "bodyweight standing close-grip row",
+    "name": "Тяга узким хватом с весом тела",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "3158-tig3PXb.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч и слегка согнуты в коленях.",
+      "Наклонитесь вперед в талии, сохраняя спину прямой и напрягая корпус.",
+      "Вытяните руки прямо перед собой, крепко взявшись за перекладину или ручки."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3162",
+    "sourceName": "bodyweight standing one arm row",
+    "name": "Тяга одной рукой с весом тела",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "3162-xbkPfaw.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, колени слегка согнуты, в одной руке возьмите гантель.",
+      "Наклонитесь вперед в бедрах, сохраняя спину прямой и напряженный корпус.",
+      "Пусть гантель висит прямо перед вами, полностью выпрямив руку."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3161",
+    "sourceName": "bodyweight standing one arm row (with towel)",
+    "name": "Тяга одной рукой с полотенцем",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "3161-O4oIqQD.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, колени слегка согнуты, одной рукой держите полотенце.",
+      "Наклонитесь вперед в бедрах, сохраняя спину прямой и напряженный корпус.",
+      "Подтяните полотенце к груди, сведя лопатки вместе."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3166",
+    "sourceName": "bodyweight standing row",
+    "name": "Тяга к себе с весом тела",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Дельты"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "3166-wd4ds3s.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч и слегка согнуты в коленях.",
+      "Возьмите перекладину или ручки верхним хватом ладонями вниз.",
+      "Держите спину прямо и напрягите корпус."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "3165",
+    "sourceName": "bodyweight standing row (with towel)",
+    "name": "Тяга к себе с полотенцем",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Дельты"
+    ],
+    "equipment": "Собственный вес",
+    "gifName": "3165-uTv34oq.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, держите полотенце перед собой обеими руками.",
+      "Слегка согните колени и наклонитесь вперед в бедрах, сохраняя спину прямой.",
+      "Подтяните полотенце к груди, сведя лопатки вместе."
+    ],
+    "loadMode": "bodyweight",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0023",
+    "sourceName": "barbell alternate biceps curl",
+    "name": "Попеременные сгибания рук со штангой",
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0023-Yza7XrQ.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте прямо, ноги на ширине плеч, возьмите в каждую руку по штанге ладонями вперед.",
+      "Держите плечи неподвижно и выдыхайте, сгибая штангу и одновременно сокращая бицепсы.",
+      "Продолжайте поднимать штангу до тех пор, пока ваши бицепсы полностью не сократятся и штанга не окажется на уровне плеч."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0024",
+    "sourceName": "barbell bench front squat",
+    "name": "Фронтальные приседания со штангой со скамьи",
+    "primaryMuscles": [
+      "Квадрицепс"
+    ],
+    "secondaryMuscles": [
+      "Бицепс бедра",
+      "Ягодицы"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0024-Y7YcmIJ.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Начните с того, что встаньте, поставив ноги на ширине плеч и положив штангу на верхнюю часть груди, чуть ниже ключиц.",
+      "Держите штангу хватом сверху, держа локти вверху и плечам параллельно земле.",
+      "Опустите тело в присед, сгибая колени и бедра, сохраняя спину прямой и грудь вверх."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0026",
+    "sourceName": "barbell bench squat",
+    "name": "Приседания со штангой до скамьи",
+    "primaryMuscles": [
+      "Квадрицепс"
+    ],
+    "secondaryMuscles": [
+      "Ягодицы",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0026-W9pFVv1.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Установите штангу на стойке для приседаний на уровне груди.",
+      "Встаньте лицом от стойки, ноги на ширине плеч.",
+      "Согните ноги в коленях и опустите тело в положение приседа, держа спину прямо и грудь вверх."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "2407",
+    "sourceName": "barbell biceps curl (with arm blaster)",
+    "name": "Сгибание рук со штангой с упором для бицепса",
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Штанга",
+    "gifName": "2407-aee2Fcj.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте прямо, ноги на ширине плеч, возьмите штангу обратным хватом ладонями вверх.",
+      "Прижмите плечи к армбластеру, держа локти близко к туловищу.",
+      "Удерживая плечи неподвижно, выдохните и согните гири, одновременно сокращая бицепсы."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0029",
+    "sourceName": "barbell clean-grip front squat",
+    "name": "Фронтальные приседания хватом для взятия",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0029-qi996YS.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Начните с того, что встаньте, поставив ноги на ширине плеч, положив штангу на верхнюю часть груди, локти направлены вперед.",
+      "Опустите тело, согнув колени и отведя бедра назад, как будто вы садитесь на стул.",
+      "При опускании держите грудь поднятой, а спину прямой, следя за тем, чтобы колени не выходили за носки ног."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0038",
+    "sourceName": "barbell drag curl",
+    "name": "Сгибание рук со штангой с протяжкой",
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0038-IENzBdA.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, возьмите штангу обратным хватом ладонями вверх.",
+      "Пусть штанга висит на расстоянии вытянутой руки перед бедрами.",
+      "Удерживая плечи неподвижно, поднимите штангу к груди, напрягая бицепсы."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1370",
+    "sourceName": "barbell floor calf raise",
+    "name": "Подъём на носки со штангой на полу",
+    "primaryMuscles": [
+      "Икры"
+    ],
+    "secondaryMuscles": [
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "1370-2IHEa2T.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Положите штангу на пол перед собой.",
+      "Встаньте подушечками стоп на край штанги, свесив пятки.",
+      "При необходимости держитесь за устойчивый предмет для равновесия."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0039",
+    "sourceName": "barbell front chest squat",
+    "name": "Приседания со штангой на груди",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0039-IeTIEqg.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Для начала встаньте, поставив ноги на ширине плеч, носки слегка развернуты наружу.",
+      "Держите штангу перед грудью, руки на ширине плеч, локти направлены вперед.",
+      "Напрягите корпус и держите грудь поднятой, опуская тело в присед, отводя бедра назад и сгибая колени."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1461",
+    "sourceName": "barbell full squat (back pov)",
+    "name": "Приседания со штангой: вид сзади",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "1461-DhMl549.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, носки слегка развернуты наружу.",
+      "Держите штангу на верхней части спины, опираясь на трапеции или задние дельты.",
+      "Напрягите корпус и держите грудь поднятой, когда начинаете опускать тело вниз."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1462",
+    "sourceName": "barbell full squat (side pov)",
+    "name": "Приседания со штангой: вид сбоку",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "1462-iYzB0Cz.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, носки слегка развернуты наружу.",
+      "Держите штангу на верхней части спины, опираясь на трапеции или задние дельты.",
+      "Напрягите корпус и держите грудь поднятой, когда начинаете опускать тело вниз."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1545",
+    "sourceName": "barbell full zercher squat",
+    "name": "Приседания Зерхера",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "1545-vR1vold.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, поставив ноги на ширине плеч и слегка развернув пальцы ног.",
+      "Держите штангу на сгибах локтей, удерживая ее руками для устойчивости.",
+      "Напрягите корпус и держите грудь поднятой, опуская бедра назад и вниз в положение приседа."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0045",
+    "sourceName": "barbell guillotine bench press",
+    "name": "Жим штанги «гильотина»",
+    "primaryMuscles": [
+      "Грудь"
+    ],
+    "secondaryMuscles": [
+      "Дельты",
+      "Трицепс"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0045-GXoaSgn.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Лягте на скамью, поставьте ступни на землю и прижмите спину к скамье.",
+      "Возьмите штангу хватом сверху, на расстоянии чуть шире плеч.",
+      "Медленно опустите штангу к шее, держа локти направленными наружу."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0046",
+    "sourceName": "barbell hack squat",
+    "name": "Хак-приседания со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0046-5VCj6iH.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Начните с того, что встаньте, поставив ноги на ширине плеч и слегка развернув пальцы ног.",
+      "Держите штангу за ногами, положив ее на верхнюю часть бедер.",
+      "Опустите тело, согнув колени и бедра, держа спину прямо и грудь вверх."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1436",
+    "sourceName": "barbell high bar squat",
+    "name": "Приседания со штангой высокой постановкой грифа",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "1436-Gnfo4FM.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, носки слегка развернуты наружу.",
+      "Положите штангу на верхнюю часть спины, положив ее на трапеции.",
+      "Напрягите корпус и держите грудь поднятой, когда начинаете приседать, отводя бедра назад и сгибая колени."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1719",
+    "sourceName": "barbell incline close grip bench press",
+    "name": "Жим штанги на наклонной скамье узким хватом",
+    "primaryMuscles": [
+      "Трицепс"
+    ],
+    "secondaryMuscles": [
+      "Грудь",
+      "Дельты"
+    ],
+    "equipment": "Штанга",
+    "gifName": "1719-gx7s7uF.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Установите наклонную скамью под углом 45 градусов.",
+      "Лягте на скамью, положив ноги на землю.",
+      "Возьмите штангу узким хватом, на расстоянии чуть уже ширины плеч."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0049",
+    "sourceName": "barbell incline row",
+    "name": "Тяга штанги на наклонной скамье",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0049-dmgMp3n.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Установите наклонную скамью под углом 45 градусов.",
+      "Лягте на скамью лицом вниз, прижавшись грудью к подушке, а ступни поставьте на землю.",
+      "Возьмите штангу хватом сверху, на расстоянии чуть шире плеч."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0051",
+    "sourceName": "barbell jefferson squat",
+    "name": "Приседания Джефферсона",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0051-pkSoCW9.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, поставив ноги на ширине плеч и слегка развернув пальцы ног.",
+      "Держите штангу хватом сверху, положив ее на переднюю часть тела, чуть ниже талии.",
+      "Сделайте шаг левой ногой вперед, а правой назад, держа ноги на ширине плеч."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0052",
+    "sourceName": "barbell jm bench press",
+    "name": "Жим Джей-Эм со штангой",
+    "primaryMuscles": [
+      "Трицепс"
+    ],
+    "secondaryMuscles": [
+      "Грудь",
+      "Дельты"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0052-ZsiqXYa.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Лягте на скамью, поставьте ступни на землю и прижмите спину к скамье.",
+      "Возьмите штангу хватом сверху, на расстоянии чуть шире плеч.",
+      "Опустите штангу к груди, держа локти близко к телу."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0053",
+    "sourceName": "barbell jump squat",
+    "name": "Прыжковые приседания со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0053-1gFNTZV.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Начните с того, что встаньте, поставив ноги на ширине плеч, удерживая штангу на верхней части спины.",
+      "Опустите тело в присед, согнув колени и отведя бедра назад.",
+      "Как только вы достигнете нижней точки приседа, взорвитесь вверх, отпрыгнув от земли."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1410",
+    "sourceName": "barbell lateral lunge",
+    "name": "Боковые выпады со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "1410-py1HSzx.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, удерживая штангу на верхней части спины.",
+      "Сделайте большой шаг в сторону правой ногой, удерживая левую ногу на месте.",
+      "Согните правое колено и опустите тело в положение выпада, сохраняя левую ногу прямой."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "1435",
+    "sourceName": "barbell low bar squat",
+    "name": "Приседания со штангой низкой постановкой грифа",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "1435-bTpEUcm.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, а штанга положитесь на верхнюю часть спины.",
+      "Удерживая грудь поднятой и напряженным корпус, медленно опустите тело, сгибая колени и отводя бедра назад.",
+      "Продолжайте опускаться до тех пор, пока бедра не станут параллельны земле или немного ниже."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0059",
+    "sourceName": "barbell lying preacher curl",
+    "name": "Сгибание рук со штангой лёжа на скамье Скотта",
+    "primaryMuscles": [
+      "Бицепс"
+    ],
+    "secondaryMuscles": [
+      "Предплечья"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0059-SYJ4Bkt.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Сядьте на скамью для проповедника, прижав грудь к подушке и вытянув руки через край, держа штангу обратным хватом.",
+      "Удерживая плечи неподвижно, выдохните и согните гантели, одновременно сокращая бицепсы.",
+      "Продолжайте поднимать штангу до тех пор, пока ваши бицепсы полностью не сократятся и штанга не окажется на уровне плеч."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0063",
+    "sourceName": "barbell narrow stance squat",
+    "name": "Приседания со штангой в узкой стойке",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Квадрицепс",
+      "Бицепс бедра"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0063-elhhVgj.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, носки слегка направлены наружу.",
+      "Держите штангу на верхней части спины, опираясь на трапеции или задние дельты.",
+      "Напрягите корпус и держите грудь поднятой, медленно опуская тело, сгибая колени и отводя бедра назад."
+    ],
+    "loadMode": "total",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0064",
+    "sourceName": "barbell one arm bent over row",
+    "name": "Тяга штанги одной рукой в наклоне",
+    "primaryMuscles": [
+      "Верх спины"
+    ],
+    "secondaryMuscles": [
+      "Бицепс",
+      "Предплечья"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0064-Jsgsc27.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, колени слегка согнуты, возьмите штангу одной рукой хватом сверху.",
+      "Наклонитесь вперед в бедрах, сохраняя спину прямой и голову в нейтральном положении.",
+      "Подтяните штангу к груди, держа локоть близко к телу и сжимая лопатки вместе."
+    ],
+    "loadMode": "perHand",
+    "defaultUnit": "kg"
+  },
+  {
+    "id": "0066",
+    "sourceName": "barbell one arm side deadlift",
+    "name": "Становая тяга одной рукой со штангой",
+    "primaryMuscles": [
+      "Ягодицы"
+    ],
+    "secondaryMuscles": [
+      "Бицепс бедра",
+      "Квадрицепс"
+    ],
+    "equipment": "Штанга",
+    "gifName": "0066-2DxtqHL.gif",
+    "attribution": "© Gym visual — https://gymvisual.com/",
+    "technique": [
+      "Встаньте, ноги на ширине плеч, держите штангу в одной руке хватом сверху.",
+      "Держите спину прямо, а корпус напряженным.",
+      "Согнитесь в бедрах и опустите штангу к внешней стороне ноги, держа руку прямо и грудь вверх."
+    ],
+    "loadMode": "perHand",
     "defaultUnit": "kg"
   }
 ]

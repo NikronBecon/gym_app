@@ -41,8 +41,11 @@ struct WorkoutCalendarView: View {
                                 ScheduleRow(workout: workout)
                             }
                             .buttonStyle(.plain)
+                            .disabled(workout.status == .completed || workout.status == .inProgress)
                             .swipeActions(edge: .trailing) {
-                                Button("Удалить", role: .destructive) { delete(workout) }
+                                if workout.status != .inProgress {
+                                    Button("Удалить", role: .destructive) { delete(workout) }
+                                }
                                 if workout.status == .planned {
                                     Button("Пропустить") { skip(workout) }
                                         .tint(.gray)
@@ -121,6 +124,7 @@ private struct ScheduleRow: View {
     private var statusText: String {
         switch workout.status {
         case .planned: "Запланирована"
+        case .inProgress: "Идёт"
         case .completed: "Выполнена"
         case .skipped: "Пропущена"
         }
@@ -129,6 +133,7 @@ private struct ScheduleRow: View {
     private var statusColor: Color {
         switch workout.status {
         case .planned: AppTheme.accent
+        case .inProgress: .orange
         case .completed: AppTheme.success
         case .skipped: .gray
         }
@@ -176,12 +181,10 @@ private struct ScheduleEditorView: View {
                 Section("Напоминание") {
                     Toggle("Напомнить", isOn: $reminderEnabled)
                     if reminderEnabled {
-                        Picker("Когда", selection: $reminderMinutes) {
-                            Text("За 30 минут").tag(30)
-                            Text("За 1 час").tag(60)
-                            Text("За 2 часа").tag(120)
-                            Text("За день").tag(1_440)
-                        }
+                        Stepper(reminderText, value: $reminderMinutes, in: 5...1_440, step: 5)
+                        Text("Выберите, за сколько до начала тренировки придёт локальное уведомление.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
                     }
                 }
             }
@@ -222,5 +225,14 @@ private struct ScheduleEditorView: View {
         try? modelContext.save()
         Task { await NotificationService.schedule(for: item) }
         dismiss()
+    }
+
+    private var reminderText: String {
+        if reminderMinutes < 60 { return "За \(reminderMinutes) мин." }
+        if reminderMinutes.isMultiple(of: 60) {
+            let hours = reminderMinutes / 60
+            return hours == 1 ? "За 1 час" : "За \(hours) ч."
+        }
+        return "За \(reminderMinutes / 60) ч. \(reminderMinutes % 60) мин."
     }
 }

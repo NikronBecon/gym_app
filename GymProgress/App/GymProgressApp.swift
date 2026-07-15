@@ -8,8 +8,8 @@ struct GymProgressApp: App {
     init() {
         Self.excludeLocalDataFromBackup()
         do {
-            container = try ModelContainer(
-                for: WorkoutTemplate.self,
+            let schema = Schema([
+                WorkoutTemplate.self,
                 TemplateSlot.self,
                 TemplateVariant.self,
                 PlannedSet.self,
@@ -19,7 +19,12 @@ struct GymProgressApp: App {
                 SetRecord.self,
                 BodyWeightEntry.self,
                 AppSettings.self
+            ])
+            let configuration = ModelConfiguration(
+                schema: schema,
+                isStoredInMemoryOnly: ProcessInfo.processInfo.arguments.contains("-UITesting")
             )
+            container = try ModelContainer(for: schema, configurations: configuration)
         } catch {
             fatalError("Не удалось открыть локальную базу: \(error)")
         }

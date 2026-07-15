@@ -3,11 +3,11 @@ import SwiftUI
 
 struct TodayView: View {
     @Query(sort: \WorkoutTemplate.order) private var templates: [WorkoutTemplate]
-    @Query private var schedules: [ScheduledWorkout]
-    @Query private var sessions: [WorkoutSession]
+    @Query(sort: \ScheduledWorkout.scheduledAt) private var schedules: [ScheduledWorkout]
+    @Query(filter: #Predicate<WorkoutSession> { $0.statusRaw == "active" })
+    private var sessions: [WorkoutSession]
 
-    @State private var templateToStart: WorkoutTemplate?
-    @State private var scheduledIDToStart: UUID?
+    @State private var startRequest: WorkoutStartRequest?
     @State private var shownSession: WorkoutSession?
 
     private var activeSession: WorkoutSession? {
@@ -15,10 +15,7 @@ struct TodayView: View {
     }
 
     private var nextSchedule: ScheduledWorkout? {
-        schedules
-            .filter { $0.status == .planned }
-            .sorted { $0.scheduledAt < $1.scheduledAt }
-            .first
+        schedules.first { $0.status == .planned }
     }
 
     var body: some View {
@@ -47,14 +44,13 @@ struct TodayView: View {
                 }
             }
         }
-        .sheet(item: $templateToStart) { template in
+        .sheet(item: $startRequest) { request in
             StartWorkoutSheet(
-                template: template,
-                scheduledWorkoutID: scheduledIDToStart
+                template: request.template,
+                scheduledWorkoutID: request.scheduledWorkoutID
             ) { session in
                 shownSession = session
-                templateToStart = nil
-                scheduledIDToStart = nil
+                startRequest = nil
             }
         }
         .fullScreenCover(item: $shownSession) { session in
@@ -95,8 +91,10 @@ struct TodayView: View {
             Button("Начать тренировку") {
                 guard activeSession == nil,
                       let template = templates.first(where: { $0.id == schedule.templateID }) else { return }
-                scheduledIDToStart = schedule.id
-                templateToStart = template
+                startRequest = WorkoutStartRequest(
+                    template: template,
+                    scheduledWorkoutID: schedule.id
+                )
             }
             .buttonStyle(.borderedProminent)
             .disabled(activeSession != nil)
@@ -124,8 +122,7 @@ struct TodayView: View {
             ForEach(templates) { template in
                 Button {
                     guard activeSession == nil else { return }
-                    scheduledIDToStart = nil
-                    templateToStart = template
+                    startRequest = WorkoutStartRequest(template: template, scheduledWorkoutID: nil)
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
@@ -147,6 +144,12 @@ struct TodayView: View {
             }
         }
     }
+}
+
+private struct WorkoutStartRequest: Identifiable {
+    let id = UUID()
+    let template: WorkoutTemplate
+    let scheduledWorkoutID: UUID?
 }
 
 private struct StartWorkoutSheet: View {

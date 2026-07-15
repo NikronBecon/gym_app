@@ -102,11 +102,6 @@ struct ExerciseDetailView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .appCard()
-
-                Text("© Gym visual — https://gymvisual.com/")
-                    .font(.footnote)
-                    .foregroundStyle(AppTheme.secondaryText)
-                    .frame(maxWidth: .infinity, alignment: .center)
             }
             .padding()
         }
