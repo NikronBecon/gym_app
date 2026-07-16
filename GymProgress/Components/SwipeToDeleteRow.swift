@@ -21,14 +21,20 @@ struct SwipeToDeleteRow<Content: View>: View {
                     Label("Удалить", systemImage: "trash")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.white)
-                        .frame(width: actionWidth)
-                        .frame(maxHeight: .infinity)
+                        .frame(width: actionWidth, height: 52)
                 }
                 .buttonStyle(.plain)
                 .background(.red)
+                .clipShape(Capsule())
+                .padding(.trailing, 2)
             }
 
             content()
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+                // The content must be opaque while closed; otherwise the
+                // delete control behind it leaks through before any swipe.
+                .background(AppTheme.card)
                 .offset(x: offset)
                 .allowsHitTesting(!isRevealed)
                 .simultaneousGesture(swipeGesture)
