@@ -177,13 +177,12 @@ private struct SessionSetRow: View {
     let loadMode: LoadMode
     let onDelete: () -> Void
     let canDelete: Bool
-    @State private var swipeOffset: CGFloat = 0
     @State private var completionPulse = false
 
     var body: some View {
-        rowContent
-            .offset(x: swipeOffset)
-            .gesture(deleteGesture)
+        SwipeToDeleteRow(isEnabled: canDelete, onDelete: onDelete) {
+            rowContent
+        }
     }
 
     private var rowContent: some View {
@@ -241,24 +240,6 @@ private struct SessionSetRow: View {
 
     private var canComplete: Bool {
         return set.actualReps != nil && (loadMode == .bodyweight || set.actualLoadTenths != nil)
-    }
-
-    private var deleteGesture: some Gesture {
-        DragGesture(minimumDistance: 18)
-            .onChanged { value in
-                guard canDelete else { return }
-                swipeOffset = min(0, max(-72, value.translation.width))
-            }
-            .onEnded { value in
-                guard canDelete else { return }
-                if value.translation.width < -52 {
-                    onDelete()
-                } else {
-                    withAnimation(.snappy) {
-                        swipeOffset = 0
-                    }
-                }
-            }
     }
 
     private func toggleCompletion() {

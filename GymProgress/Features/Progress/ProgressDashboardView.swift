@@ -272,9 +272,13 @@ private struct WorkoutHistoryDetailView: View {
                         if isEditing {
                             HistorySetEditorRow(
                                 set: set,
-                                loadMode: exercise.loadMode,
-                                onDelete: { delete(set, from: exercise) }
+                                loadMode: exercise.loadMode
                             )
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button("Удалить", role: .destructive) {
+                                    delete(set, from: exercise)
+                                }
+                            }
                         } else {
                             HStack {
                                 Text("Подход \(set.order + 1)")
@@ -369,7 +373,6 @@ private struct WorkoutHistoryDetailView: View {
 private struct HistorySetEditorRow: View {
     @Bindable var set: SetRecord
     let loadMode: LoadMode
-    let onDelete: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -377,10 +380,6 @@ private struct HistorySetEditorRow: View {
                 Text("Подход \(set.order + 1)")
                     .font(.subheadline.weight(.medium))
                 Spacer()
-                Button(role: .destructive, action: onDelete) {
-                    Image(systemName: "minus.circle")
-                }
-                .accessibilityLabel("Удалить подход \(set.order + 1)")
             }
             HStack(spacing: 8) {
                 if loadMode == .bodyweight {
