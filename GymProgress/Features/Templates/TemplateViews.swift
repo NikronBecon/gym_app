@@ -74,6 +74,106 @@ enum TemplateService {
         }
         try? context.save()
     }
+
+    static func sync(for template: WorkoutTemplate, context: ModelContext) {
+        syncPlannedSchedules(for: template, context: context)
+        syncActiveSessions(for: template, context: context)
+    }
+
+    static func syncActiveSessions(for template: WorkoutTemplate, context: ModelContext) {
+        guard let sessions = try? context.fetch(FetchDescriptor<WorkoutSession>()) else { return }
+
+        for session in sessions where session.status == .active && session.templateID == template.id {
+            sync(session: session, with: template)
+        }
+        try? context.save()
+    }
+
+    static func syncAllActiveSessions(context: ModelContext) {
+        guard let templates = try? context.fetch(FetchDescriptor<WorkoutTemplate>()) else { return }
+        for template in templates {
+            syncActiveSessions(for: template, context: context)
+        }
+    }
+
+    private static func sync(session: WorkoutSession, with template: WorkoutTemplate) {
+        session.name = template.name
+        var matchedExerciseIDs = Set<UUID>()
+
+        for (slotIndex, slot) in template.sortedSlots.enumerated() {
+            guard let selected = selectedVariant(for: slot, in: session) else { continue }
+            let item = ExerciseCatalog.shared.item(id: selected.catalogID)
+            let existing = session.exercises.first {
+                !matchedExerciseIDs.contains($0.id)
+                    && $0.catalogID == selected.catalogID
+            }
+
+            let exercise: SessionExercise
+            if let existing {
+                exercise = existing
+            } else {
+                exercise = SessionExercise(
+                    catalogID: selected.catalogID,
+                    nameSnapshot: item?.name ?? selected.catalogID,
+                    order: slotIndex,
+                    restSeconds: selected.restSeconds,
+                    loadMode: item?.loadMode ?? .total
+                )
+                session.exercises.append(exercise)
+            }
+
+            matchedExerciseIDs.insert(exercise.id)
+            exercise.catalogID = selected.catalogID
+            exercise.nameSnapshot = item?.name ?? selected.catalogID
+            exercise.order = slotIndex
+            exercise.restSeconds = selected.restSeconds
+            exercise.loadModeRaw = (item?.loadMode ?? .total).rawValue
+            syncPendingSets(in: exercise, from: selected)
+        }
+
+        let templateExerciseCount = template.sortedSlots.count
+        for (offset, exercise) in session.sortedExercises.enumerated() where !matchedExerciseIDs.contains(exercise.id) {
+            exercise.order = templateExerciseCount + offset
+        }
+    }
+
+    private static func selectedVariant(for slot: TemplateSlot, in session: WorkoutSession) -> TemplateVariant? {
+        slot.variants.first { variant in
+            session.exercises.contains(where: { $0.catalogID == variant.catalogID })
+        } ?? slot.variants.first
+    }
+
+    private static func syncPendingSets(in exercise: SessionExercise, from variant: TemplateVariant) {
+        for (index, planned) in variant.sortedSets.enumerated() {
+            if let set = exercise.sortedSets[safe: index] {
+                guard !set.isCompleted else { continue }
+                let wasAutofilled = set.actualLoadTenths == set.plannedLoadTenths
+                    && set.actualReps == set.plannedReps
+                set.plannedLoadTenths = planned.loadTenths
+                set.plannedReps = planned.reps
+                set.unit = planned.unit
+                if wasAutofilled {
+                    set.actualLoadTenths = planned.loadTenths
+                    set.actualReps = planned.reps
+                }
+            } else {
+                exercise.sets.append(SetRecord(
+                    order: index,
+                    plannedLoadTenths: planned.loadTenths,
+                    plannedReps: planned.reps,
+                    actualLoadTenths: planned.loadTenths,
+                    actualReps: planned.reps,
+                    unit: planned.unit
+                ))
+            }
+        }
+    }
+}
+
+private extension Array {
+    subscript(safe index: Index) -> Element? {
+        indices.contains(index) ? self[index] : nil
+    }
 }
 
 private struct TemplateEditorView: View {
@@ -112,8 +212,11 @@ private struct TemplateEditorView: View {
         .dismissKeyboardOnTap()
         .navigationTitle(template.name)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            TemplateService.sync(for: template, context: modelContext)
+        }
         .onChange(of: template.name) { _, _ in
-            TemplateService.syncPlannedSchedules(for: template, context: modelContext)
+            TemplateService.sync(for: template, context: modelContext)
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) { EditButton() }
@@ -126,6 +229,7 @@ private struct TemplateEditorView: View {
                 let variant = TemplateVariant(catalogID: item.id, plannedSets: sets)
                 template.slots.append(TemplateSlot(order: template.slots.count, variants: [variant]))
                 try? modelContext.save()
+                TemplateService.sync(for: template, context: modelContext)
             }
         }
     }
@@ -135,6 +239,7 @@ private struct TemplateEditorView: View {
         ordered.move(fromOffsets: source, toOffset: destination)
         for (index, slot) in ordered.enumerated() { slot.order = index }
         try? modelContext.save()
+        TemplateService.sync(for: template, context: modelContext)
     }
 
     private func delete(at offsets: IndexSet) {
@@ -145,6 +250,7 @@ private struct TemplateEditorView: View {
             modelContext.delete(slot)
         }
         try? modelContext.save()
+        TemplateService.sync(for: template, context: modelContext)
     }
 }
 
@@ -173,6 +279,9 @@ private struct SlotEditorView: View {
             }
         }
         .navigationTitle("Варианты")
+        .onDisappear {
+            TemplateService.syncAllActiveSessions(context: modelContext)
+        }
         .sheet(isPresented: $showCatalog) {
             CatalogPickerView { item in
                 let sets = (0..<3).map {
@@ -180,6 +289,7 @@ private struct SlotEditorView: View {
                 }
                 slot.variants.append(TemplateVariant(catalogID: item.id, plannedSets: sets))
                 try? modelContext.save()
+                TemplateService.syncAllActiveSessions(context: modelContext)
             }
         }
     }
@@ -191,6 +301,7 @@ private struct SlotEditorView: View {
             modelContext.delete(variant)
         }
         try? modelContext.save()
+        TemplateService.syncAllActiveSessions(context: modelContext)
     }
 }
 
@@ -200,11 +311,8 @@ private struct VariantEditorView: View {
 
     var body: some View {
         Form {
-            Section("Отдых") {
-                Stepper("\(variant.restSeconds) секунд", value: $variant.restSeconds, in: 30...300, step: 15)
-            }
             Section("Подходы") {
-                Text("Ориентир для следующей тренировки: укажите вес и повторы. Можно оставить поля пустыми.")
+                Text("План для первой тренировки: укажите вес и повторы. Можно оставить поля пустыми. Затем ориентир будет подставляться из последних выполненных подходов.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                 HStack {
@@ -241,6 +349,9 @@ private struct VariantEditorView: View {
         .dismissKeyboardOnTap()
         .navigationTitle(ExerciseCatalog.shared.item(id: variant.catalogID)?.name ?? "Упражнение")
         .navigationBarTitleDisplayMode(.inline)
+        .onDisappear {
+            TemplateService.syncAllActiveSessions(context: modelContext)
+        }
     }
 
     private func delete(_ set: PlannedSet) {
@@ -248,6 +359,7 @@ private struct VariantEditorView: View {
         modelContext.delete(set)
         for (index, set) in variant.sortedSets.enumerated() { set.order = index }
         try? modelContext.save()
+        TemplateService.syncAllActiveSessions(context: modelContext)
     }
 }
 

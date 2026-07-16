@@ -23,12 +23,8 @@ struct WorkoutView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    timerCard
                     ForEach(session.sortedExercises) { exercise in
-                        SessionExerciseCard(
-                            exercise: exercise,
-                            onSetCompleted: { startRest(seconds: exercise.restSeconds) }
-                        )
+                        SessionExerciseCard(exercise: exercise)
                     }
                     Button("Добавить упражнение", systemImage: "plus") { showCatalog = true }
                         .buttonStyle(.bordered)
@@ -80,45 +76,6 @@ struct WorkoutView: View {
         }
     }
 
-    @ViewBuilder
-    private var timerCard: some View {
-        if let end = session.restEndDate, end > .now {
-            TimelineView(.periodic(from: .now, by: 1)) { context in
-                let remaining = max(0, Int(end.timeIntervalSince(context.date).rounded(.up)))
-                HStack {
-                    Image(systemName: "timer")
-                        .foregroundStyle(AppTheme.accent)
-                    VStack(alignment: .leading) {
-                        Text("Отдых")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.secondaryText)
-                        Text(durationText(remaining))
-                            .font(.title2.monospacedDigit().bold())
-                    }
-                    Spacer()
-                    Button("Пропустить") {
-                        session.restEndDate = nil
-                        try? modelContext.save()
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .appCard()
-                .onChange(of: remaining) { oldValue, newValue in
-                    if oldValue > 0, newValue == 0 {
-                        UINotificationFeedbackGenerator().notificationOccurred(.success)
-                        session.restEndDate = nil
-                        try? modelContext.save()
-                    }
-                }
-            }
-        }
-    }
-
-    private func startRest(seconds: Int) {
-        session.restEndDate = .now.addingTimeInterval(TimeInterval(seconds))
-        try? modelContext.save()
-    }
-
     private func addExercise(_ item: ExerciseCatalogItem) {
         let sets = (0..<3).map { index in
             SetRecord(
@@ -149,7 +106,6 @@ struct WorkoutView: View {
 private struct SessionExerciseCard: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var exercise: SessionExercise
-    let onSetCompleted: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -157,9 +113,6 @@ private struct SessionExerciseCard: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(exercise.nameSnapshot)
                         .font(.headline)
-                    Text("Отдых \(exercise.restSeconds) сек.")
-                        .font(.caption)
-                        .foregroundStyle(AppTheme.secondaryText)
                 }
                 Spacer()
                 NavigationLink {
@@ -173,7 +126,7 @@ private struct SessionExerciseCard: View {
 
             HStack {
                 Text("№").frame(width: 24)
-                Text("Ориентир").frame(maxWidth: .infinity)
+                Text("Прошлый раз").frame(maxWidth: .infinity)
                 Text("Вес").frame(width: 62)
                 Text("Повт.").frame(width: 52)
                 Color.clear.frame(width: 34)
@@ -181,11 +134,14 @@ private struct SessionExerciseCard: View {
             .font(.caption)
             .foregroundStyle(AppTheme.secondaryText)
 
+            Text("«Прошлый раз» — последние выполненные вес и повторы этого упражнения.")
+                .font(.caption2)
+                .foregroundStyle(AppTheme.secondaryText)
+
             ForEach(exercise.sortedSets) { set in
                 SessionSetRow(
                     set: set,
                     loadMode: exercise.loadMode,
-                    onCompleted: onSetCompleted,
                     onDelete: { delete(set) },
                     canDelete: exercise.sets.count > 1
                 )
@@ -223,11 +179,39 @@ private struct SessionSetRow: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var set: SetRecord
     let loadMode: LoadMode
-    let onCompleted: () -> Void
     let onDelete: () -> Void
     let canDelete: Bool
+    @State private var deleteRevealed = false
+    @State private var dragOffset: CGFloat = 0
+    @State private var completionPulse = false
 
     var body: some View {
+        ZStack(alignment: .trailing) {
+            if canDelete {
+                Button(action: onDelete) {
+                    Label("Удалить", systemImage: "trash")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 92)
+                        .frame(maxHeight: .infinity)
+                }
+                .background(AppTheme.secondaryText)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            }
+
+            rowContent
+                .offset(x: (deleteRevealed ? -92 : 0) + dragOffset)
+                .gesture(deleteGesture)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .contextMenu {
+            if canDelete {
+                Button("Удалить подход", systemImage: "trash", role: .destructive, action: onDelete)
+            }
+        }
+    }
+
+    private var rowContent: some View {
         HStack(spacing: 8) {
             Text("\(set.order + 1)")
                 .font(.subheadline.monospacedDigit())
@@ -256,10 +240,7 @@ private struct SessionSetRow: View {
             OptionalRepsField(reps: $set.actualReps)
                 .frame(width: 52)
             Button {
-                set.isCompleted.toggle()
-                set.completedAt = set.isCompleted ? .now : nil
-                try? modelContext.save()
-                if set.isCompleted { onCompleted() }
+                toggleCompletion()
             } label: {
                 Image(systemName: set.isCompleted ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
@@ -268,17 +249,13 @@ private struct SessionSetRow: View {
             .frame(width: 34)
             .disabled(!canComplete)
             .accessibilityLabel(set.isCompleted ? "Подход выполнен" : "Отметить подход")
-
-            if canDelete {
-                Button(role: .destructive, action: onDelete) {
-                    Image(systemName: "minus.circle")
-                }
-                .frame(width: 24)
-                .accessibilityLabel("Удалить подход \(set.order + 1)")
-            }
         }
         .padding(.vertical, 4)
-        .opacity(set.isCompleted ? 0.72 : 1)
+        .padding(.horizontal, 4)
+        .background(set.isCompleted ? AppTheme.success.opacity(0.14) : .clear)
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .scaleEffect(completionPulse ? 1.015 : 1)
+        .animation(.spring(response: 0.26, dampingFraction: 0.68), value: completionPulse)
     }
 
     private var referenceText: String {
@@ -289,6 +266,39 @@ private struct SessionSetRow: View {
 
     private var canComplete: Bool {
         return set.actualReps != nil && (loadMode == .bodyweight || set.actualLoadTenths != nil)
+    }
+
+    private var deleteGesture: some Gesture {
+        DragGesture(minimumDistance: 18)
+            .onChanged { value in
+                guard canDelete else { return }
+                let baseOffset: CGFloat = deleteRevealed ? -92 : 0
+                dragOffset = min(0, max(-92, baseOffset + value.translation.width)) - baseOffset
+            }
+            .onEnded { _ in
+                guard canDelete else { return }
+                withAnimation(.snappy) {
+                    deleteRevealed = deleteRevealed || dragOffset < -36
+                    if dragOffset > 20 { deleteRevealed = false }
+                    dragOffset = 0
+                }
+            }
+    }
+
+    private func toggleCompletion() {
+        let willComplete = !set.isCompleted
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+            set.isCompleted = willComplete
+            set.completedAt = willComplete ? .now : nil
+            completionPulse = willComplete
+        }
+        try? modelContext.save()
+
+        guard willComplete else { return }
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
+            completionPulse = false
+        }
     }
 
     private func changeUnit(to unit: WeightUnit) {

@@ -25,22 +25,23 @@ struct ProgressDashboardView: View {
 
     private var currentStreak: Int {
         let calendar = Calendar.current
-        let workoutDays = Set(completed.map { calendar.startOfDay(for: $0.endedAt ?? $0.startedAt) })
-        guard !workoutDays.isEmpty else { return 0 }
+        let workoutDays = Array(Set(completed.map {
+            calendar.startOfDay(for: $0.endedAt ?? $0.startedAt)
+        })).sorted(by: >)
+        guard let latestDay = workoutDays.first else { return 0 }
 
-        var day = calendar.startOfDay(for: .now)
-        if !workoutDays.contains(day) {
-            guard let yesterday = calendar.date(byAdding: .day, value: -1, to: day), workoutDays.contains(yesterday) else {
-                return 0
-            }
-            day = yesterday
-        }
+        let today = calendar.startOfDay(for: .now)
+        let daysSinceLatest = calendar.dateComponents([.day], from: latestDay, to: today).day ?? .max
+        // A run remains active while there were no more than two full rest days.
+        guard daysSinceLatest <= 3 else { return 0 }
 
-        var streak = 0
-        while workoutDays.contains(day) {
+        var streak = 1
+        for index in 1..<workoutDays.count {
+            let newerDay = workoutDays[index - 1]
+            let olderDay = workoutDays[index]
+            let gap = calendar.dateComponents([.day], from: olderDay, to: newerDay).day ?? .max
+            guard gap <= 3 else { break }
             streak += 1
-            guard let previousDay = calendar.date(byAdding: .day, value: -1, to: day) else { break }
-            day = previousDay
         }
         return streak
     }
@@ -85,7 +86,7 @@ struct ProgressDashboardView: View {
             )
             metric(
                 value: "\(currentStreak)",
-                label: "дней подряд",
+                label: "тренировки подряд",
                 icon: "flame.fill"
             )
         }
@@ -141,6 +142,10 @@ struct ProgressDashboardView: View {
             Text("Нажмите на график, чтобы добавить или удалить замер.")
                 .font(.caption)
                 .foregroundStyle(AppTheme.secondaryText)
+            Button("Управлять замерами", systemImage: "slider.horizontal.3") {
+                weightManager = WeightManagerRequest()
+            }
+            .buttonStyle(.bordered)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .appCard()
@@ -457,6 +462,10 @@ private struct BodyWeightManagerView: View {
                         }
                     }
                     .onDelete(perform: delete)
+
+                    Text("Смахните запись влево, чтобы удалить её, или нажмите «Править».")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.secondaryText)
                 }
             }
             .dismissKeyboardOnTap()
@@ -470,6 +479,9 @@ private struct BodyWeightManagerView: View {
                         newMeasurement = WeightMeasurementDraft()
                     }
                     .accessibilityIdentifier("progress.addWeight")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    EditButton()
                 }
             }
         }

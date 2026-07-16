@@ -14,8 +14,11 @@ struct TodayView: View {
         sessions.first { $0.status == .active }
     }
 
-    private var nextSchedule: ScheduledWorkout? {
-        schedules.first { $0.status == .planned }
+    private var scheduleForToday: ScheduledWorkout? {
+        schedules.first {
+            $0.status == .planned
+                && Calendar.current.isDate($0.scheduledAt, inSameDayAs: .now)
+        }
     }
 
     var body: some View {
@@ -24,9 +27,8 @@ struct TodayView: View {
                 VStack(spacing: 16) {
                     if let activeSession {
                         activeCard(activeSession)
-                    }
-                    if let nextSchedule {
-                        scheduleCard(nextSchedule)
+                    } else if let scheduleForToday {
+                        scheduleCard(scheduleForToday)
                     } else {
                         emptyScheduleCard
                     }
@@ -80,7 +82,7 @@ struct TodayView: View {
     private func scheduleCard(_ schedule: ScheduledWorkout) -> some View {
         let templateName = templates.first(where: { $0.id == schedule.templateID })?.name ?? schedule.templateName
         return VStack(alignment: .leading, spacing: 12) {
-            Text("Ближайшая тренировка")
+            Text("Тренировка на сегодня")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(AppTheme.secondaryText)
             Text(templateName)
@@ -107,9 +109,9 @@ struct TodayView: View {
 
     private var emptyScheduleCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Нет запланированной тренировки")
+            Text("На сегодня тренировка не запланирована")
                 .font(.headline)
-            Text("Выберите шаблон ниже или назначьте дату в календаре.")
+            Text("Можно начать тренировку без расписания из любого шаблона ниже или назначить дату в календаре.")
                 .foregroundStyle(AppTheme.secondaryText)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -118,8 +120,11 @@ struct TodayView: View {
 
     private var templatesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Начать из шаблона")
+            Text("Начать без расписания")
                 .font(.title3.bold())
+            Text("Выберите шаблон — тренировка не появится в календаре.")
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryText)
             ForEach(templates) { template in
                 Button {
                     guard activeSession == nil else { return }
