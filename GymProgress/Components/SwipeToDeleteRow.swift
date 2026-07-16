@@ -18,14 +18,21 @@ struct SwipeToDeleteRow<Content: View>: View {
                         onDelete()
                     }
                 } label: {
-                    Label("Удалить", systemImage: "trash")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: actionWidth, height: 52)
+                    HStack(spacing: 6) {
+                        Image(systemName: "trash")
+                        Text("Удалить")
+                            .opacity(actionTextProgress)
+                    }
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: visibleActionWidth, height: 36)
+                    .background(.red)
+                    .clipShape(Capsule())
+                    .scaleEffect(0.78 + 0.22 * actionProgress, anchor: .trailing)
+                    .opacity(actionProgress)
                 }
                 .buttonStyle(.plain)
-                .background(.red)
-                .clipShape(Capsule())
+                .frame(width: actionWidth, alignment: .trailing)
                 .padding(.trailing, 2)
             }
 
@@ -43,6 +50,18 @@ struct SwipeToDeleteRow<Content: View>: View {
     }
 
     private var actionWidth: CGFloat { 92 }
+
+    private var actionProgress: CGFloat {
+        min(1, max(0, -offset / actionWidth))
+    }
+
+    private var actionTextProgress: CGFloat {
+        min(1, max(0, (actionProgress - 0.42) / 0.58))
+    }
+
+    private var visibleActionWidth: CGFloat {
+        36 + (actionWidth - 36) * actionProgress
+    }
 
     private var swipeGesture: some Gesture {
         DragGesture(minimumDistance: 18)
