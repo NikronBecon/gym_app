@@ -111,8 +111,6 @@ struct TodayView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("На сегодня тренировка не запланирована")
                 .font(.headline)
-            Text("Можно начать тренировку без расписания из любого шаблона ниже или назначить дату в календаре.")
-                .foregroundStyle(AppTheme.secondaryText)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .appCard()
@@ -122,9 +120,6 @@ struct TodayView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Начать без расписания")
                 .font(.title3.bold())
-            Text("Выберите шаблон — тренировка не появится в календаре.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryText)
             ForEach(templates) { template in
                 Button {
                     guard activeSession == nil else { return }

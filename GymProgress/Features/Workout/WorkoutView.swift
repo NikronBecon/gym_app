@@ -134,10 +134,6 @@ private struct SessionExerciseCard: View {
             .font(.caption)
             .foregroundStyle(AppTheme.secondaryText)
 
-            Text("«Прошлый раз» — последние выполненные вес и повторы этого упражнения.")
-                .font(.caption2)
-                .foregroundStyle(AppTheme.secondaryText)
-
             ForEach(exercise.sortedSets) { set in
                 SessionSetRow(
                     set: set,
@@ -181,34 +177,13 @@ private struct SessionSetRow: View {
     let loadMode: LoadMode
     let onDelete: () -> Void
     let canDelete: Bool
-    @State private var deleteRevealed = false
-    @State private var dragOffset: CGFloat = 0
+    @State private var swipeOffset: CGFloat = 0
     @State private var completionPulse = false
 
     var body: some View {
-        ZStack(alignment: .trailing) {
-            if canDelete {
-                Button(action: onDelete) {
-                    Label("Удалить", systemImage: "trash")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 92)
-                        .frame(maxHeight: .infinity)
-                }
-                .background(AppTheme.secondaryText)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-            }
-
-            rowContent
-                .offset(x: (deleteRevealed ? -92 : 0) + dragOffset)
-                .gesture(deleteGesture)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .contextMenu {
-            if canDelete {
-                Button("Удалить подход", systemImage: "trash", role: .destructive, action: onDelete)
-            }
-        }
+        rowContent
+            .offset(x: swipeOffset)
+            .gesture(deleteGesture)
     }
 
     private var rowContent: some View {
@@ -272,15 +247,16 @@ private struct SessionSetRow: View {
         DragGesture(minimumDistance: 18)
             .onChanged { value in
                 guard canDelete else { return }
-                let baseOffset: CGFloat = deleteRevealed ? -92 : 0
-                dragOffset = min(0, max(-92, baseOffset + value.translation.width)) - baseOffset
+                swipeOffset = min(0, max(-72, value.translation.width))
             }
-            .onEnded { _ in
+            .onEnded { value in
                 guard canDelete else { return }
-                withAnimation(.snappy) {
-                    deleteRevealed = deleteRevealed || dragOffset < -36
-                    if dragOffset > 20 { deleteRevealed = false }
-                    dragOffset = 0
+                if value.translation.width < -52 {
+                    onDelete()
+                } else {
+                    withAnimation(.snappy) {
+                        swipeOffset = 0
+                    }
                 }
             }
     }

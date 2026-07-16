@@ -5,26 +5,45 @@ struct WorkoutCalendarView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \ScheduledWorkout.scheduledAt) private var schedules: [ScheduledWorkout]
     @Query(sort: \WorkoutTemplate.order) private var templates: [WorkoutTemplate]
+    @Query(
+        filter: #Predicate<WorkoutSession> { $0.statusRaw == "completed" },
+        sort: \WorkoutSession.startedAt
+    ) private var completedSessions: [WorkoutSession]
+    @Query(sort: \WorkoutSession.startedAt) private var sessions: [WorkoutSession]
 
     @State private var selectedDate = Date()
     @State private var showNewWorkout = false
     @State private var editingWorkout: ScheduledWorkout?
 
     private var selectedSchedules: [ScheduledWorkout] {
-        schedules.filter { Calendar.current.isDate($0.scheduledAt, inSameDayAs: selectedDate) }
+        schedules.filter { workout in
+            guard Calendar.current.isDate(workout.scheduledAt, inSameDayAs: selectedDate) else { return false }
+            guard workout.status == .completed, let sessionID = workout.sessionID else { return true }
+            return sessions.contains(where: { $0.id == sessionID })
+        }
+    }
+
+    private var completedWorkoutDays: Set<Date> {
+        Set(completedSessions.map {
+            Calendar.current.startOfDay(for: $0.endedAt ?? $0.startedAt)
+        })
+    }
+
+    private var plannedWorkoutDays: Set<Date> {
+        Set(schedules.filter { $0.status == .planned }.map {
+            Calendar.current.startOfDay(for: $0.scheduledAt)
+        })
     }
 
     var body: some View {
         NavigationStack {
             List {
                 Section {
-                    DatePicker(
-                        "Дата",
-                        selection: $selectedDate,
-                        displayedComponents: .date
+                    WorkoutMonthCalendar(
+                        selectedDate: $selectedDate,
+                        completedDays: completedWorkoutDays,
+                        plannedDays: plannedWorkoutDays
                     )
-                    .datePickerStyle(.graphical)
-                    .labelsHidden()
                     .accessibilityIdentifier("calendar.datePicker")
                 }
 
@@ -85,6 +104,7 @@ struct WorkoutCalendarView: View {
                 selectedDate: workout.scheduledAt
             )
         }
+        .onAppear(perform: removeOrphanedCompletedSchedules)
     }
 
     private func skip(_ workout: ScheduledWorkout) {
@@ -97,6 +117,131 @@ struct WorkoutCalendarView: View {
         NotificationService.cancel(workoutID: workout.id)
         modelContext.delete(workout)
         try? modelContext.save()
+    }
+
+    private func removeOrphanedCompletedSchedules() {
+        let sessionIDs = Set(sessions.map(\.id))
+        for workout in schedules where workout.status == .completed
+            && workout.sessionID != nil
+            && !sessionIDs.contains(workout.sessionID!) {
+            NotificationService.cancel(workoutID: workout.id)
+            modelContext.delete(workout)
+        }
+        try? modelContext.save()
+    }
+}
+
+private struct WorkoutMonthCalendar: View {
+    @Binding var selectedDate: Date
+    let completedDays: Set<Date>
+    let plannedDays: Set<Date>
+    @State private var displayedMonth: Date
+
+    private let calendar = Calendar.current
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: 7)
+    private let weekdays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+
+    init(selectedDate: Binding<Date>, completedDays: Set<Date>, plannedDays: Set<Date>) {
+        _selectedDate = selectedDate
+        self.completedDays = completedDays
+        self.plannedDays = plannedDays
+        let components = Calendar.current.dateComponents([.year, .month], from: selectedDate.wrappedValue)
+        _displayedMonth = State(initialValue: Calendar.current.date(from: components) ?? selectedDate.wrappedValue)
+    }
+
+    var body: some View {
+        VStack(spacing: 10) {
+            HStack {
+                Button("Предыдущий месяц", systemImage: "chevron.left") { changeMonth(by: -1) }
+                    .labelStyle(.iconOnly)
+                Spacer()
+                Text(displayedMonth.formatted(.dateTime.month(.wide).year()))
+                    .font(.headline)
+                Spacer()
+                Button("Следующий месяц", systemImage: "chevron.right") { changeMonth(by: 1) }
+                    .labelStyle(.iconOnly)
+            }
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(weekdays, id: \.self) { weekday in
+                    Text(weekday)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(AppTheme.secondaryText)
+                }
+
+                ForEach(Array(monthGrid.enumerated()), id: \.offset) { _, day in
+                    if let day {
+                        dayButton(day)
+                    } else {
+                        Color.clear.frame(height: 42)
+                    }
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private var monthGrid: [Date?] {
+        guard let dayRange = calendar.range(of: .day, in: .month, for: displayedMonth) else { return [] }
+        let weekday = calendar.component(.weekday, from: displayedMonth)
+        let leadingEmptyDays = (weekday + 5) % 7
+        var days: [Date?] = Array(repeating: nil, count: leadingEmptyDays)
+        days += dayRange.compactMap { calendar.date(byAdding: .day, value: $0 - 1, to: displayedMonth) }
+        let trailingEmptyDays = (7 - days.count % 7) % 7
+        days += Array(repeating: nil, count: trailingEmptyDays)
+        return days
+    }
+
+    private func dayButton(_ day: Date) -> some View {
+        let normalizedDay = calendar.startOfDay(for: day)
+        let hasCompletedWorkout = completedDays.contains(normalizedDay)
+        let hasPlannedWorkout = plannedDays.contains(normalizedDay)
+        let isSelected = calendar.isDate(day, inSameDayAs: selectedDate)
+        let isToday = calendar.isDateInToday(day)
+
+        return Button {
+            selectedDate = day
+        } label: {
+            VStack(spacing: 3) {
+                Text(day.formatted(.dateTime.day()))
+                    .font(.subheadline.weight(isToday ? .bold : .regular))
+                    .frame(width: 32, height: 32)
+                    .background(dayColor(completed: hasCompletedWorkout, planned: hasPlannedWorkout).opacity(0.18))
+                    .clipShape(Circle())
+                    .overlay {
+                        Circle()
+                            .stroke(isSelected ? AppTheme.accent : .clear, lineWidth: 2)
+                    }
+                HStack(spacing: 3) {
+                    if hasCompletedWorkout { statusDot(color: AppTheme.success) }
+                    if hasPlannedWorkout { statusDot(color: AppTheme.accent) }
+                }
+                .frame(height: 4)
+            }
+            .frame(maxWidth: .infinity, minHeight: 42)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel(for: day, completed: hasCompletedWorkout, planned: hasPlannedWorkout))
+    }
+
+    private func dayColor(completed: Bool, planned: Bool) -> Color {
+        completed ? AppTheme.success : (planned ? AppTheme.accent : .clear)
+    }
+
+    private func statusDot(color: Color) -> some View {
+        Circle().fill(color).frame(width: 4, height: 4)
+    }
+
+    private func accessibilityLabel(for day: Date, completed: Bool, planned: Bool) -> String {
+        var label = day.formatted(date: .long, time: .omitted)
+        if completed { label += ", тренировка выполнена" }
+        if planned { label += ", тренировка запланирована" }
+        return label
+    }
+
+    private func changeMonth(by value: Int) {
+        guard let month = calendar.date(byAdding: .month, value: value, to: displayedMonth) else { return }
+        displayedMonth = month
     }
 }
 

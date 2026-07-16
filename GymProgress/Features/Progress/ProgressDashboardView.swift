@@ -135,17 +135,9 @@ struct ProgressDashboardView: View {
                 .chartYScale(domain: chartDomain(for: bodyWeightValues))
                 .chartXAxis { dateAxis }
                 .chartXScale(domain: dateDomain(for: weights.map(\.day)))
-                .chartXAxisLabel("Дата", position: .bottom)
                 .chartYAxis { bodyWeightAxis }
-                .chartYAxisLabel("Вес, кг", position: .leading)
+                .chartYAxisLabel("кг", position: .leading)
             }
-            Text("Нажмите на график, чтобы добавить или удалить замер.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryText)
-            Button("Управлять замерами", systemImage: "slider.horizontal.3") {
-                weightManager = WeightManagerRequest()
-            }
-            .buttonStyle(.bordered)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .appCard()
@@ -168,10 +160,6 @@ struct ProgressDashboardView: View {
                 .labelsHidden()
                 .pickerStyle(.menu)
             }
-            Text("Здесь показаны только упражнения и подходы, которые были отмечены выполненными.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryText)
-
             if displayedSessions.isEmpty {
                 emptyState(selectedExerciseID == nil
                     ? "Завершённые тренировки появятся здесь"
@@ -364,9 +352,10 @@ private struct WorkoutHistoryDetailView: View {
     }
 
     private func deleteSession() {
-        if let scheduledWorkoutID = session.scheduledWorkoutID {
-            let descriptor = FetchDescriptor<ScheduledWorkout>(predicate: #Predicate { $0.id == scheduledWorkoutID })
-            if let scheduledWorkout = try? modelContext.fetch(descriptor).first {
+        if let schedules = try? modelContext.fetch(FetchDescriptor<ScheduledWorkout>()) {
+            let scheduledWorkoutID = session.scheduledWorkoutID
+            for scheduledWorkout in schedules where scheduledWorkout.sessionID == session.id
+                || scheduledWorkoutID.map({ scheduledWorkout.id == $0 }) == true {
                 NotificationService.cancel(workoutID: scheduledWorkout.id)
                 modelContext.delete(scheduledWorkout)
             }
@@ -463,9 +452,6 @@ private struct BodyWeightManagerView: View {
                     }
                     .onDelete(perform: delete)
 
-                    Text("Смахните запись влево, чтобы удалить её, или нажмите «Править».")
-                        .font(.caption)
-                        .foregroundStyle(AppTheme.secondaryText)
                 }
             }
             .dismissKeyboardOnTap()
@@ -479,9 +465,6 @@ private struct BodyWeightManagerView: View {
                         newMeasurement = WeightMeasurementDraft()
                     }
                     .accessibilityIdentifier("progress.addWeight")
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
                 }
             }
         }
