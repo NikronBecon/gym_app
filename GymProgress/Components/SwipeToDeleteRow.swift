@@ -18,16 +18,12 @@ struct SwipeToDeleteRow<Content: View>: View {
                         onDelete()
                     }
                 } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "trash")
-                        Text("Удалить")
-                            .opacity(actionTextProgress)
-                    }
-                    .font(.caption.weight(.semibold))
+                    Image(systemName: "xmark")
+                    .font(.caption.bold())
                     .foregroundStyle(.white)
-                    .frame(width: visibleActionWidth, height: 36)
+                    .frame(width: 36, height: 36)
                     .background(.red)
-                    .clipShape(Capsule())
+                    .clipShape(Circle())
                     .scaleEffect(0.78 + 0.22 * actionProgress, anchor: .trailing)
                     .opacity(actionProgress)
                 }
@@ -44,35 +40,29 @@ struct SwipeToDeleteRow<Content: View>: View {
                 .background(AppTheme.card)
                 .offset(x: offset)
                 .allowsHitTesting(!isRevealed)
-                .simultaneousGesture(swipeGesture)
         }
+        .contentShape(Rectangle())
+        .simultaneousGesture(swipeGesture)
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
-    private var actionWidth: CGFloat { 92 }
+    private var actionWidth: CGFloat { 52 }
 
     private var actionProgress: CGFloat {
         min(1, max(0, -offset / actionWidth))
-    }
-
-    private var actionTextProgress: CGFloat {
-        min(1, max(0, (actionProgress - 0.42) / 0.58))
-    }
-
-    private var visibleActionWidth: CGFloat {
-        36 + (actionWidth - 36) * actionProgress
     }
 
     private var swipeGesture: some Gesture {
         DragGesture(minimumDistance: 18)
             .onChanged { value in
                 guard isEnabled else { return }
-                offset = min(0, max(-actionWidth, value.translation.width))
+                let startingOffset: CGFloat = isRevealed ? -actionWidth : 0
+                offset = min(0, max(-actionWidth, startingOffset + value.translation.width))
             }
-            .onEnded { value in
+            .onEnded { _ in
                 guard isEnabled else { return }
                 withAnimation(.snappy) {
-                    isRevealed = value.translation.width < -(actionWidth * 0.45)
+                    isRevealed = offset < -(actionWidth * 0.5)
                     offset = isRevealed ? -actionWidth : 0
                 }
             }
