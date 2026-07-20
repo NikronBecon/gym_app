@@ -251,6 +251,7 @@ struct ProgressDashboardView: View {
 private struct WorkoutHistoryDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Bindable var session: WorkoutSession
     @State private var isEditing = false
     @State private var showDeleteConfirmation = false
@@ -307,7 +308,7 @@ private struct WorkoutHistoryDetailView: View {
                     }
                 }
                 Button(isEditing ? "Готово" : "Править", systemImage: isEditing ? "checkmark" : "square.and.pencil") {
-                    if isEditing { try? modelContext.save() }
+                    if isEditing, !modelContext.save(reportingTo: errorCenter) { return }
                     isEditing.toggle()
                 }
             }
@@ -345,28 +346,31 @@ private struct WorkoutHistoryDetailView: View {
         set.isCompleted = true
         set.completedAt = session.endedAt ?? .now
         exercise.sets.append(set)
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 
     private func delete(_ set: SetRecord, from exercise: SessionExercise) {
         exercise.sets.removeAll { $0.id == set.id }
         modelContext.delete(set)
         for (index, item) in exercise.sortedSets.enumerated() { item.order = index }
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 
     private func deleteSession() {
-        if let schedules = try? modelContext.fetch(FetchDescriptor<ScheduledWorkout>()) {
+        do {
+            let schedules = try modelContext.fetch(FetchDescriptor<ScheduledWorkout>())
             let scheduledWorkoutID = session.scheduledWorkoutID
             for scheduledWorkout in schedules where scheduledWorkout.sessionID == session.id
                 || scheduledWorkoutID.map({ scheduledWorkout.id == $0 }) == true {
                 NotificationService.cancel(workoutID: scheduledWorkout.id)
                 modelContext.delete(scheduledWorkout)
             }
+            modelContext.delete(session)
+            try modelContext.save()
+            dismiss()
+        } catch {
+            errorCenter.report(error, title: "Не удалось удалить тренировку")
         }
-        modelContext.delete(session)
-        try? modelContext.save()
-        dismiss()
     }
 }
 
@@ -430,6 +434,7 @@ private struct WeightMeasurementDraft: Identifiable {
 private struct BodyWeightManagerView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Query(sort: \BodyWeightEntry.day, order: .reverse) private var weights: [BodyWeightEntry]
     @State private var newMeasurement: WeightMeasurementDraft?
 
@@ -474,13 +479,14 @@ private struct BodyWeightManagerView: View {
 
     private func delete(at offsets: IndexSet) {
         for index in offsets { modelContext.delete(weights[index]) }
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 }
 
 private struct BodyWeightEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @State private var day = Date()
     @State private var weight = ""
 
@@ -512,14 +518,18 @@ private struct BodyWeightEditorView: View {
 
     private func save() {
         guard let weightTenths else { return }
-        let normalizedDay = Calendar.current.startOfDay(for: day)
-        let descriptor = FetchDescriptor<BodyWeightEntry>(predicate: #Predicate { $0.day == normalizedDay })
-        if let existing = try? modelContext.fetch(descriptor).first {
-            existing.weightTenthsKg = weightTenths
-        } else {
-            modelContext.insert(BodyWeightEntry(day: normalizedDay, weightTenthsKg: weightTenths))
+        do {
+            let normalizedDay = Calendar.current.startOfDay(for: day)
+            let descriptor = FetchDescriptor<BodyWeightEntry>(predicate: #Predicate { $0.day == normalizedDay })
+            if let existing = try modelContext.fetch(descriptor).first {
+                existing.weightTenthsKg = weightTenths
+            } else {
+                modelContext.insert(BodyWeightEntry(day: normalizedDay, weightTenthsKg: weightTenths))
+            }
+            try modelContext.save()
+            dismiss()
+        } catch {
+            errorCenter.report(error, title: "Не удалось сохранить замер")
         }
-        try? modelContext.save()
-        dismiss()
     }
 }

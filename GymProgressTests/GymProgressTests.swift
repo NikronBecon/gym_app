@@ -1,3 +1,4 @@
+import Foundation
 import SwiftData
 import Testing
 @testable import GymProgress
@@ -346,6 +347,138 @@ struct GymProgressTests {
         #expect(schedules.first?.id == completed.id)
         #expect(sessions.count == 1)
         #expect(sessions.first?.id == history.id)
+    }
+
+    @MainActor
+    @Test func templateDeletionRemovesPendingExerciseButKeepsSessionOnlyExercise() throws {
+        let context = try makeContext()
+        let first = TemplateVariant(
+            catalogID: "0025",
+            plannedSets: [PlannedSet(order: 0, loadTenths: 500, reps: 8, unit: .kg)]
+        )
+        let removed = TemplateVariant(
+            catalogID: "0652",
+            plannedSets: [PlannedSet(order: 0, loadTenths: nil, reps: 8, unit: .kg)]
+        )
+        let removedSlot = TemplateSlot(order: 1, variants: [removed])
+        let template = WorkoutTemplate(
+            name: "Тест",
+            order: 0,
+            slots: [TemplateSlot(order: 0, variants: [first]), removedSlot]
+        )
+        context.insert(template)
+        let session = try WorkoutBuilder.start(
+            template: template,
+            choices: [:],
+            scheduledWorkoutID: nil,
+            context: context
+        )
+        session.exercises.append(SessionExercise(
+            catalogID: "0334",
+            nameSnapshot: "Махи гантелями в стороны",
+            order: 2,
+            restSeconds: SessionExercise.sessionOnlyMarker,
+            loadMode: .perHand,
+            sets: [SetRecord(
+                order: 0,
+                plannedLoadTenths: nil,
+                plannedReps: nil,
+                actualLoadTenths: nil,
+                actualReps: nil,
+                unit: .kg
+            )]
+        ))
+        template.slots.removeAll { $0.id == removedSlot.id }
+        context.delete(removedSlot)
+
+        TemplateService.sync(
+            for: template,
+            context: context,
+            errors: AppErrorCenter()
+        )
+
+        #expect(session.exercises.contains(where: { $0.catalogID == "0025" }))
+        #expect(!session.exercises.contains(where: { $0.catalogID == "0652" }))
+        #expect(session.exercises.contains(where: { $0.catalogID == "0334" }))
+    }
+
+    @MainActor
+    @Test func reducingTemplateSetsRemovesOnlyPendingExtras() throws {
+        let context = try makeContext()
+        let plannedSets = (0..<3).map {
+            PlannedSet(order: $0, loadTenths: 500, reps: 8, unit: .kg)
+        }
+        let variant = TemplateVariant(catalogID: "0025", plannedSets: plannedSets)
+        let template = WorkoutTemplate(
+            name: "Тест",
+            order: 0,
+            slots: [TemplateSlot(order: 0, variants: [variant])]
+        )
+        context.insert(template)
+        let session = try WorkoutBuilder.start(
+            template: template,
+            choices: [:],
+            scheduledWorkoutID: nil,
+            context: context
+        )
+        let completedExtra = session.exercises[0].sortedSets[2]
+        completedExtra.isCompleted = true
+
+        for set in variant.sortedSets.dropFirst() {
+            variant.plannedSets.removeAll { $0.id == set.id }
+            context.delete(set)
+        }
+        TemplateService.sync(
+            for: template,
+            context: context,
+            errors: AppErrorCenter()
+        )
+
+        #expect(session.exercises[0].sets.count == 2)
+        #expect(session.exercises[0].sets.contains(where: { $0.id == completedExtra.id }))
+    }
+
+    @MainActor
+    @Test func versionedContainerOpensExistingUnversionedStore() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("GymProgressMigration-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let storeURL = directory.appendingPathComponent("default.store")
+
+        do {
+            let legacySchema = Schema(GymProgressSchemaV1.models)
+            let legacyConfiguration = ModelConfiguration(
+                "MigrationTest",
+                schema: legacySchema,
+                url: storeURL,
+                cloudKitDatabase: .none
+            )
+            let legacyContainer = try ModelContainer(
+                for: legacySchema,
+                configurations: legacyConfiguration
+            )
+            let legacyContext = ModelContext(legacyContainer)
+            legacyContext.insert(WorkoutTemplate(name: "Сохранённый шаблон", order: 0))
+            try legacyContext.save()
+        }
+
+        let versionedSchema = Schema(versionedSchema: GymProgressSchemaV1.self)
+        let versionedConfiguration = ModelConfiguration(
+            "MigrationTest",
+            schema: versionedSchema,
+            url: storeURL,
+            cloudKitDatabase: .none
+        )
+        let versionedContainer = try ModelContainer(
+            for: versionedSchema,
+            migrationPlan: GymProgressMigrationPlan.self,
+            configurations: versionedConfiguration
+        )
+        let versionedContext = ModelContext(versionedContainer)
+        let templates = try versionedContext.fetch(FetchDescriptor<WorkoutTemplate>())
+
+        #expect(templates.map(\.name) == ["Сохранённый шаблон"])
     }
 
     @MainActor

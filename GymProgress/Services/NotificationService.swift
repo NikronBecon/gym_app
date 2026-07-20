@@ -3,7 +3,7 @@ import UserNotifications
 
 @MainActor
 enum NotificationService {
-    static func schedule(for workout: ScheduledWorkout) async {
+    static func schedule(for workout: ScheduledWorkout) async throws {
         if ProcessInfo.processInfo.arguments.contains("-UITesting") { return }
         cancel(workoutID: workout.id)
         guard workout.status == .planned,
@@ -15,7 +15,10 @@ enum NotificationService {
         let center = UNUserNotificationCenter.current()
         let settings = await center.notificationSettings()
         if settings.authorizationStatus == .notDetermined {
-            _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
+            let granted = try await center.requestAuthorization(options: [.alert, .sound, .badge])
+            guard granted else { throw NotificationServiceError.permissionDenied }
+        } else if settings.authorizationStatus == .denied {
+            throw NotificationServiceError.permissionDenied
         }
 
         let content = UNMutableNotificationContent()
@@ -33,7 +36,7 @@ enum NotificationService {
             content: content,
             trigger: trigger
         )
-        try? await center.add(request)
+        try await center.add(request)
     }
 
     static func cancel(workoutID: UUID) {
@@ -43,4 +46,15 @@ enum NotificationService {
     }
 
     private static func identifier(_ id: UUID) -> String { "scheduled-workout-\(id.uuidString)" }
+}
+
+enum NotificationServiceError: LocalizedError {
+    case permissionDenied
+
+    var errorDescription: String? {
+        switch self {
+        case .permissionDenied:
+            "Уведомления выключены для ЖимЖим. Включите их в Настройки → Уведомления → ЖимЖим. Тренировка сохранена, но напоминание не придёт."
+        }
+    }
 }

@@ -3,6 +3,7 @@ import SwiftUI
 
 struct WorkoutCalendarView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Query(sort: \ScheduledWorkout.scheduledAt) private var schedules: [ScheduledWorkout]
     @Query(sort: \WorkoutTemplate.order) private var templates: [WorkoutTemplate]
     @Query(
@@ -110,13 +111,13 @@ struct WorkoutCalendarView: View {
     private func skip(_ workout: ScheduledWorkout) {
         workout.status = .skipped
         NotificationService.cancel(workoutID: workout.id)
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 
     private func delete(_ workout: ScheduledWorkout) {
         NotificationService.cancel(workoutID: workout.id)
         modelContext.delete(workout)
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 
     private func removeOrphanedCompletedSchedules() {
@@ -127,7 +128,7 @@ struct WorkoutCalendarView: View {
             NotificationService.cancel(workoutID: workout.id)
             modelContext.delete(workout)
         }
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 }
 
@@ -292,6 +293,7 @@ private struct ScheduleRow: View {
 private struct ScheduleEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
 
     let workout: ScheduledWorkout?
     let templates: [WorkoutTemplate]
@@ -371,9 +373,15 @@ private struct ScheduleEditorView: View {
             )
             modelContext.insert(item)
         }
-        try? modelContext.save()
-        Task { await NotificationService.schedule(for: item) }
-        dismiss()
+        guard modelContext.save(reportingTo: errorCenter) else { return }
+        Task {
+            do {
+                try await NotificationService.schedule(for: item)
+            } catch {
+                errorCenter.report(error, title: "Напоминание не настроено")
+            }
+            dismiss()
+        }
     }
 
     private var reminderText: String {

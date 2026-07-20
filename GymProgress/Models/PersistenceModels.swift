@@ -157,6 +157,8 @@ final class WorkoutSession {
 
 @Model
 final class SessionExercise {
+    static let sessionOnlyMarker = -1
+
     @Attribute(.unique) var id: UUID
     var catalogID: String
     var nameSnapshot: String
@@ -185,6 +187,20 @@ final class SessionExercise {
 
     var loadMode: LoadMode { LoadMode(rawValue: loadModeRaw) ?? .total }
     var sortedSets: [SetRecord] { sets.sorted { $0.order < $1.order } }
+
+    /// Uses the retired rest-timer field as a compatibility marker so this
+    /// update doesn't change the on-device schema. New schema versions can
+    /// replace it with a dedicated attribute through an explicit migration.
+    var isSessionOnly: Bool {
+        get { restSeconds == Self.sessionOnlyMarker }
+        set {
+            if newValue {
+                restSeconds = Self.sessionOnlyMarker
+            } else if restSeconds == Self.sessionOnlyMarker {
+                restSeconds = 0
+            }
+        }
+    }
 }
 
 @Model

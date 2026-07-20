@@ -4,27 +4,21 @@ import SwiftUI
 @main
 struct GymProgressApp: App {
     private let container: ModelContainer
+    @State private var errorCenter = AppErrorCenter()
 
     init() {
         Self.excludeLocalDataFromBackup()
         do {
-            let schema = Schema([
-                WorkoutTemplate.self,
-                TemplateSlot.self,
-                TemplateVariant.self,
-                PlannedSet.self,
-                ScheduledWorkout.self,
-                WorkoutSession.self,
-                SessionExercise.self,
-                SetRecord.self,
-                BodyWeightEntry.self,
-                AppSettings.self
-            ])
+            let schema = Schema(versionedSchema: GymProgressSchemaV1.self)
             let configuration = ModelConfiguration(
                 schema: schema,
                 isStoredInMemoryOnly: ProcessInfo.processInfo.arguments.contains("-UITesting")
             )
-            container = try ModelContainer(for: schema, configurations: configuration)
+            container = try ModelContainer(
+                for: schema,
+                migrationPlan: GymProgressMigrationPlan.self,
+                configurations: configuration
+            )
         } catch {
             fatalError("Не удалось открыть локальную базу: \(error)")
         }
@@ -34,6 +28,7 @@ struct GymProgressApp: App {
         WindowGroup {
             RootView()
                 .preferredColorScheme(.light)
+                .environment(errorCenter)
         }
         .modelContainer(container)
     }

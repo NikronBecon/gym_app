@@ -5,6 +5,7 @@ import UIKit
 struct WorkoutView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Bindable var session: WorkoutSession
     let onFinished: () -> Void
 
@@ -48,8 +49,9 @@ struct WorkoutView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Выйти", systemImage: "chevron.backward") {
-                        try? modelContext.save()
-                        dismiss()
+                        if modelContext.save(reportingTo: errorCenter) {
+                            dismiss()
+                        }
                     }
                 }
                 ToolbarItem(placement: .principal) {
@@ -91,11 +93,11 @@ struct WorkoutView: View {
             catalogID: item.id,
             nameSnapshot: item.name,
             order: session.exercises.count,
-            restSeconds: 90,
+            restSeconds: SessionExercise.sessionOnlyMarker,
             loadMode: item.loadMode,
             sets: sets
         ))
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 
     private func durationText(_ seconds: Int) -> String {
@@ -105,6 +107,7 @@ struct WorkoutView: View {
 
 private struct SessionExerciseCard: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Bindable var exercise: SessionExercise
 
     var body: some View {
@@ -160,19 +163,20 @@ private struct SessionExerciseCard: View {
             actualReps: last?.actualReps,
             unit: last?.unit ?? .kg
         ))
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 
     private func delete(_ set: SetRecord) {
         exercise.sets.removeAll { $0.id == set.id }
         modelContext.delete(set)
         for (index, set) in exercise.sortedSets.enumerated() { set.order = index }
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 }
 
 private struct SessionSetRow: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Bindable var set: SetRecord
     let loadMode: LoadMode
     let onDelete: () -> Void
@@ -249,7 +253,7 @@ private struct SessionSetRow: View {
             set.completedAt = willComplete ? .now : nil
             completionPulse = willComplete
         }
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
 
         guard willComplete else { return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -267,13 +271,14 @@ private struct SessionSetRow: View {
             set.actualLoadTenths = set.unit.converted(loadTenths: load, to: unit)
         }
         set.unit = unit
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 }
 
 private struct FinishWorkoutView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Bindable var session: WorkoutSession
     let incompleteCount: Int
     let onFinished: () -> Void
@@ -324,32 +329,36 @@ private struct FinishWorkoutView: View {
     }
 
     private func complete() {
-        session.endedAt = .now
-        session.status = .completed
-        session.restEndDate = nil
-        session.calories = Int(calories)
+        do {
+            session.endedAt = .now
+            session.status = .completed
+            session.restEndDate = nil
+            session.calories = Int(calories)
 
-        let normalizedWeight = bodyWeight.replacingOccurrences(of: ",", with: ".")
-        if let value = Double(normalizedWeight) {
-            let day = Calendar.current.startOfDay(for: .now)
-            let descriptor = FetchDescriptor<BodyWeightEntry>(predicate: #Predicate { $0.day == day })
-            if let existing = try? modelContext.fetch(descriptor).first {
-                existing.weightTenthsKg = Int((value * 10).rounded())
-            } else {
-                modelContext.insert(BodyWeightEntry(day: day, weightTenthsKg: Int((value * 10).rounded())))
+            let normalizedWeight = bodyWeight.replacingOccurrences(of: ",", with: ".")
+            if let value = Double(normalizedWeight) {
+                let day = Calendar.current.startOfDay(for: .now)
+                let descriptor = FetchDescriptor<BodyWeightEntry>(predicate: #Predicate { $0.day == day })
+                if let existing = try modelContext.fetch(descriptor).first {
+                    existing.weightTenthsKg = Int((value * 10).rounded())
+                } else {
+                    modelContext.insert(BodyWeightEntry(day: day, weightTenthsKg: Int((value * 10).rounded())))
+                }
             }
-        }
 
-        if let scheduledID = session.scheduledWorkoutID {
-            let descriptor = FetchDescriptor<ScheduledWorkout>(predicate: #Predicate { $0.id == scheduledID })
-            if let schedule = try? modelContext.fetch(descriptor).first {
-                schedule.status = .completed
-                schedule.sessionID = session.id
-                NotificationService.cancel(workoutID: schedule.id)
+            if let scheduledID = session.scheduledWorkoutID {
+                let descriptor = FetchDescriptor<ScheduledWorkout>(predicate: #Predicate { $0.id == scheduledID })
+                if let schedule = try modelContext.fetch(descriptor).first {
+                    schedule.status = .completed
+                    schedule.sessionID = session.id
+                    NotificationService.cancel(workoutID: schedule.id)
+                }
             }
-        }
 
-        try? modelContext.save()
-        onFinished()
+            try modelContext.save()
+            onFinished()
+        } catch {
+            errorCenter.report(error, title: "Не удалось завершить тренировку")
+        }
     }
 }

@@ -3,6 +3,7 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @State private var seedError: String?
 
     var body: some View {
@@ -27,6 +28,7 @@ struct RootView: View {
         .task {
             do {
                 try SeedService.seedIfNeeded(context: modelContext)
+                try DataMaintenanceService.prepareActiveSessions(context: modelContext)
             } catch {
                 seedError = error.localizedDescription
             }
@@ -38,6 +40,16 @@ struct RootView: View {
             Button("Закрыть", role: .cancel) { seedError = nil }
         } message: {
             Text(seedError ?? "Неизвестная ошибка")
+        }
+        .alert(item: Binding(
+            get: { errorCenter.issue },
+            set: { errorCenter.issue = $0 }
+        )) { issue in
+            Alert(
+                title: Text(issue.title),
+                message: Text(issue.message),
+                dismissButton: .default(Text("Закрыть"))
+            )
         }
     }
 }

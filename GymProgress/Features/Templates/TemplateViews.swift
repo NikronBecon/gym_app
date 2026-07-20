@@ -3,6 +3,7 @@ import SwiftUI
 
 struct TemplateListView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Query(sort: \WorkoutTemplate.order) private var templates: [WorkoutTemplate]
     @State private var templatesPendingDeletion: [WorkoutTemplate] = []
 
@@ -40,7 +41,7 @@ struct TemplateListView: View {
 
     private func addTemplate() {
         modelContext.insert(WorkoutTemplate(name: "Новая тренировка", order: templates.count))
-        try? modelContext.save()
+        modelContext.save(reportingTo: errorCenter)
     }
 
     private func delete(at offsets: IndexSet) {
@@ -48,7 +49,11 @@ struct TemplateListView: View {
     }
 
     private func confirmDelete() {
-        try? TemplateService.delete(templatesPendingDeletion, context: modelContext)
+        do {
+            try TemplateService.delete(templatesPendingDeletion, context: modelContext)
+        } catch {
+            errorCenter.report(error, title: "Не удалось удалить шаблон")
+        }
         templatesPendingDeletion = []
     }
 }
@@ -66,37 +71,70 @@ enum TemplateService {
         try context.save()
     }
 
-    static func syncPlannedSchedules(for template: WorkoutTemplate, context: ModelContext) {
-        guard let schedules = try? context.fetch(FetchDescriptor<ScheduledWorkout>()) else { return }
-        for schedule in schedules where schedule.status == .planned && schedule.templateID == template.id {
-            schedule.templateName = template.name
-            Task { await NotificationService.schedule(for: schedule) }
-        }
-        try? context.save()
-    }
-
-    static func sync(for template: WorkoutTemplate, context: ModelContext) {
-        syncPlannedSchedules(for: template, context: context)
-        syncActiveSessions(for: template, context: context)
-    }
-
-    static func syncActiveSessions(for template: WorkoutTemplate, context: ModelContext) {
-        guard let sessions = try? context.fetch(FetchDescriptor<WorkoutSession>()) else { return }
-
-        for session in sessions where session.status == .active && session.templateID == template.id {
-            sync(session: session, with: template)
-        }
-        try? context.save()
-    }
-
-    static func syncAllActiveSessions(context: ModelContext) {
-        guard let templates = try? context.fetch(FetchDescriptor<WorkoutTemplate>()) else { return }
-        for template in templates {
-            syncActiveSessions(for: template, context: context)
+    static func syncPlannedSchedules(
+        for template: WorkoutTemplate,
+        context: ModelContext,
+        errors: AppErrorCenter
+    ) {
+        do {
+            let schedules = try context.fetch(FetchDescriptor<ScheduledWorkout>())
+            for schedule in schedules where schedule.status == .planned && schedule.templateID == template.id {
+                schedule.templateName = template.name
+                Task {
+                    do {
+                        try await NotificationService.schedule(for: schedule)
+                    } catch {
+                        errors.report(error, title: "Напоминание не обновлено")
+                    }
+                }
+            }
+            try context.save()
+        } catch {
+            errors.report(error)
         }
     }
 
-    private static func sync(session: WorkoutSession, with template: WorkoutTemplate) {
+    static func sync(
+        for template: WorkoutTemplate,
+        context: ModelContext,
+        errors: AppErrorCenter
+    ) {
+        syncPlannedSchedules(for: template, context: context, errors: errors)
+        syncActiveSessions(for: template, context: context, errors: errors)
+    }
+
+    static func syncActiveSessions(
+        for template: WorkoutTemplate,
+        context: ModelContext,
+        errors: AppErrorCenter
+    ) {
+        do {
+            let sessions = try context.fetch(FetchDescriptor<WorkoutSession>())
+            for session in sessions where session.status == .active && session.templateID == template.id {
+                sync(session: session, with: template, context: context)
+            }
+            try context.save()
+        } catch {
+            errors.report(error)
+        }
+    }
+
+    static func syncAllActiveSessions(context: ModelContext, errors: AppErrorCenter) {
+        do {
+            let templates = try context.fetch(FetchDescriptor<WorkoutTemplate>())
+            for template in templates {
+                syncActiveSessions(for: template, context: context, errors: errors)
+            }
+        } catch {
+            errors.report(error)
+        }
+    }
+
+    private static func sync(
+        session: WorkoutSession,
+        with template: WorkoutTemplate,
+        context: ModelContext
+    ) {
         session.name = template.name
         var matchedExerciseIDs = Set<UUID>()
 
@@ -128,11 +166,24 @@ enum TemplateService {
             exercise.order = slotIndex
             exercise.restSeconds = selected.restSeconds
             exercise.loadModeRaw = (item?.loadMode ?? .total).rawValue
-            syncPendingSets(in: exercise, from: selected)
+            syncPendingSets(in: exercise, from: selected, context: context)
+        }
+
+        let removedTemplateExercises = session.exercises.filter {
+            !matchedExerciseIDs.contains($0.id) && !$0.isSessionOnly
+        }
+        for exercise in removedTemplateExercises {
+            if exercise.sets.contains(where: \.isCompleted) {
+                exercise.isSessionOnly = true
+            } else {
+                session.exercises.removeAll { $0.id == exercise.id }
+                context.delete(exercise)
+            }
         }
 
         let templateExerciseCount = template.sortedSlots.count
-        for (offset, exercise) in session.sortedExercises.enumerated() where !matchedExerciseIDs.contains(exercise.id) {
+        let sessionOnlyExercises = session.sortedExercises.filter { !matchedExerciseIDs.contains($0.id) }
+        for (offset, exercise) in sessionOnlyExercises.enumerated() {
             exercise.order = templateExerciseCount + offset
         }
     }
@@ -143,7 +194,11 @@ enum TemplateService {
         } ?? slot.variants.first
     }
 
-    private static func syncPendingSets(in exercise: SessionExercise, from variant: TemplateVariant) {
+    private static func syncPendingSets(
+        in exercise: SessionExercise,
+        from variant: TemplateVariant,
+        context: ModelContext
+    ) {
         for (index, planned) in variant.sortedSets.enumerated() {
             if let set = exercise.sortedSets[safe: index] {
                 guard !set.isCompleted else { continue }
@@ -167,6 +222,16 @@ enum TemplateService {
                 ))
             }
         }
+
+        let plannedCount = variant.sortedSets.count
+        let removableExtras = exercise.sortedSets.dropFirst(plannedCount).filter { !$0.isCompleted }
+        for set in removableExtras {
+            exercise.sets.removeAll { $0.id == set.id }
+            context.delete(set)
+        }
+        for (index, set) in exercise.sortedSets.enumerated() {
+            set.order = index
+        }
     }
 }
 
@@ -178,6 +243,7 @@ private extension Array {
 
 private struct TemplateEditorView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Bindable var template: WorkoutTemplate
     @State private var showCatalog = false
 
@@ -213,10 +279,10 @@ private struct TemplateEditorView: View {
         .navigationTitle(template.name)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            TemplateService.sync(for: template, context: modelContext)
+            TemplateService.sync(for: template, context: modelContext, errors: errorCenter)
         }
         .onChange(of: template.name) { _, _ in
-            TemplateService.sync(for: template, context: modelContext)
+            TemplateService.sync(for: template, context: modelContext, errors: errorCenter)
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) { EditButton() }
@@ -228,8 +294,8 @@ private struct TemplateEditorView: View {
                 }
                 let variant = TemplateVariant(catalogID: item.id, plannedSets: sets)
                 template.slots.append(TemplateSlot(order: template.slots.count, variants: [variant]))
-                try? modelContext.save()
-                TemplateService.sync(for: template, context: modelContext)
+                guard modelContext.save(reportingTo: errorCenter) else { return }
+                TemplateService.sync(for: template, context: modelContext, errors: errorCenter)
             }
         }
     }
@@ -238,8 +304,8 @@ private struct TemplateEditorView: View {
         var ordered = template.sortedSlots
         ordered.move(fromOffsets: source, toOffset: destination)
         for (index, slot) in ordered.enumerated() { slot.order = index }
-        try? modelContext.save()
-        TemplateService.sync(for: template, context: modelContext)
+        guard modelContext.save(reportingTo: errorCenter) else { return }
+        TemplateService.sync(for: template, context: modelContext, errors: errorCenter)
     }
 
     private func delete(at offsets: IndexSet) {
@@ -249,13 +315,14 @@ private struct TemplateEditorView: View {
             template.slots.removeAll { $0.id == slot.id }
             modelContext.delete(slot)
         }
-        try? modelContext.save()
-        TemplateService.sync(for: template, context: modelContext)
+        guard modelContext.save(reportingTo: errorCenter) else { return }
+        TemplateService.sync(for: template, context: modelContext, errors: errorCenter)
     }
 }
 
 private struct SlotEditorView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Bindable var slot: TemplateSlot
     @State private var showCatalog = false
 
@@ -280,7 +347,7 @@ private struct SlotEditorView: View {
         }
         .navigationTitle("Варианты")
         .onDisappear {
-            TemplateService.syncAllActiveSessions(context: modelContext)
+            TemplateService.syncAllActiveSessions(context: modelContext, errors: errorCenter)
         }
         .sheet(isPresented: $showCatalog) {
             CatalogPickerView { item in
@@ -288,8 +355,8 @@ private struct SlotEditorView: View {
                     PlannedSet(order: $0, loadTenths: nil, reps: nil, unit: item.defaultUnit)
                 }
                 slot.variants.append(TemplateVariant(catalogID: item.id, plannedSets: sets))
-                try? modelContext.save()
-                TemplateService.syncAllActiveSessions(context: modelContext)
+                guard modelContext.save(reportingTo: errorCenter) else { return }
+                TemplateService.syncAllActiveSessions(context: modelContext, errors: errorCenter)
             }
         }
     }
@@ -300,13 +367,14 @@ private struct SlotEditorView: View {
             let variant = slot.variants.remove(at: index)
             modelContext.delete(variant)
         }
-        try? modelContext.save()
-        TemplateService.syncAllActiveSessions(context: modelContext)
+        guard modelContext.save(reportingTo: errorCenter) else { return }
+        TemplateService.syncAllActiveSessions(context: modelContext, errors: errorCenter)
     }
 }
 
 private struct VariantEditorView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppErrorCenter.self) private var errorCenter
     @Bindable var variant: TemplateVariant
 
     var body: some View {
@@ -342,7 +410,7 @@ private struct VariantEditorView: View {
                         reps: variant.plannedSets.last?.reps,
                         unit: unit
                     ))
-                    try? modelContext.save()
+                    modelContext.save(reportingTo: errorCenter)
                 }
             }
         }
@@ -350,7 +418,7 @@ private struct VariantEditorView: View {
         .navigationTitle(ExerciseCatalog.shared.item(id: variant.catalogID)?.name ?? "Упражнение")
         .navigationBarTitleDisplayMode(.inline)
         .onDisappear {
-            TemplateService.syncAllActiveSessions(context: modelContext)
+            TemplateService.syncAllActiveSessions(context: modelContext, errors: errorCenter)
         }
     }
 
@@ -358,8 +426,8 @@ private struct VariantEditorView: View {
         variant.plannedSets.removeAll { $0.id == set.id }
         modelContext.delete(set)
         for (index, set) in variant.sortedSets.enumerated() { set.order = index }
-        try? modelContext.save()
-        TemplateService.syncAllActiveSessions(context: modelContext)
+        guard modelContext.save(reportingTo: errorCenter) else { return }
+        TemplateService.syncAllActiveSessions(context: modelContext, errors: errorCenter)
     }
 }
 
